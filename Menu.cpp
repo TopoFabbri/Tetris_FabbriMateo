@@ -66,14 +66,3 @@ void Settings(char input[])
 	PrintTitle("SETTINGS");
 	MenuNavigator(0, btnTxt, input, selector);
 }
-
-void Play(char input[])
-{
-	system("cls");
-
-	char btnTxt[txtMaxLength][maxButtons];
-	int selector;
-
-	PrintTitle("PLAY");
-	MenuNavigator(0, btnTxt, input, selector);
-}
