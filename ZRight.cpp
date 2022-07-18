@@ -49,8 +49,8 @@ void ZRight::RotationUp()
 
 void ZRight::RotationRight()
 {
-	downLeft = { center.x, center.y - 1 };
-	right = { center.x - 1, center.y + 1 };
+	downLeft = { center.x - 1, center.y - 1 };
+	right = { center.x, center.y + 1 };
 	down = { center.x - 1, center.y };
 }
 
@@ -109,16 +109,16 @@ void ZRight::Draw()
 	SetColor(color);
 
 	cursor.gotoxy(ConLoc(center));
-	std::cout << "  ";
+	std::cout << sqr << sqr;
 
 	cursor.gotoxy(ConLoc(downLeft));
-	std::cout << "  ";
+	std::cout << sqr << sqr;
 
 	cursor.gotoxy(ConLoc(right));
-	std::cout << "  ";
+	std::cout << sqr << sqr;
 
 	cursor.gotoxy(ConLoc(down));
-	std::cout << "  ";
+	std::cout << sqr << sqr;
 
 	SetColor(defColor);
 	cursor.gotoxy(txtPos);

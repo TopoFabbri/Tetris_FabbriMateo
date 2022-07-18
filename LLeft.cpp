@@ -109,16 +109,16 @@ void LLeft::Draw()
 	SetColor(color);
 
 	cursor.gotoxy(ConLoc(center));
-	std::cout << "  ";
+	std::cout << sqr << sqr;
 
 	cursor.gotoxy(ConLoc(left));
-	std::cout << "  ";
+	std::cout << sqr << sqr;
 
 	cursor.gotoxy(ConLoc(corner));
-	std::cout << "  ";
+	std::cout << sqr << sqr;
 
 	cursor.gotoxy(ConLoc(down));
-	std::cout << "  ";
+	std::cout << sqr << sqr;
 
 	SetColor(defColor);
 	cursor.gotoxy(txtPos);

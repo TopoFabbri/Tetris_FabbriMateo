@@ -28,7 +28,7 @@ void SetColor(COLORS color)
 
 COORDS ConLoc(COORDS boardLoc)
 {
-    boardLoc.x = boardLoc.x * 2 + 1;
+    boardLoc.x = boardLoc.x * 2 + 1 + boardIndent;
     boardLoc.y = boardLoc.y + 1;
 
     return boardLoc;

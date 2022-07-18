@@ -5,9 +5,11 @@
 
 const int txtMaxLength = 10;
 const int maxButtons = 10;
-const int frameUpdate = 1000;
 const int maxX = 10;
 const int maxY = 24;
+const int boardIndent = 60;
+const char sqr = 177;
+const int defFrameUpdate = 1000;
 
 enum class ROT
 {

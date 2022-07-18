@@ -36,10 +36,10 @@ struct OBJECTS
 };
 
 KEYS GetKeys(char& inKey, char input[]);
+bool CheckLines(CELL board[maxX][maxY], OBJECTS obj, OBJS curObj);
 void FrameUpdate(CELL board[maxX][maxY], OBJECTS& obj, OBJS curObj);
 void ExecuteInput(char& inKey, char input[], OBJECTS& obj, CELL board[maxX][maxY], OBJS curObj);
-void CheckLines(CELL board[maxX][maxY]);
-void DestroyLine(CELL board[maxX][maxY]);
+void DestroyLine(CELL board[maxX][maxY], int line, OBJECTS obj, OBJS curObj);
 void FallObject(OBJECTS& obj, CELL board[maxX][maxY], OBJS curObj);
 void RotateObjectLeft(OBJECTS& obj, CELL board[maxX][maxY], OBJS curObj);
 void RotateObjectRight(OBJECTS& obj, CELL board[maxX][maxY], OBJS curObj);
@@ -54,3 +54,4 @@ void ResetBoard(CELL board[maxX][maxY]);
 void CheckChangeObject(OBJECTS& obj, OBJS& curObj, CELL board[maxX][maxY]);
 void Play(char input[]);
 void PlaceObjects(OBJECTS& obj, OBJS curObj);
+void SetNewSpeed(int& frameUpdate);

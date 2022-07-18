@@ -5,7 +5,9 @@ void Play(char input[])
 	CELL board[maxX][maxY];
 	OBJECTS objects;
 	OBJS curObj = (OBJS)(rand() % objQty + 1);
-	char inKey = ' ';
+	bool lost = false;
+	char inKey = '#';
+	int frameUpdate = defFrameUpdate;
 
 	system("cls");
 	ResetBoard(board);
@@ -18,8 +20,10 @@ void Play(char input[])
 
 		ExecuteInput(inKey, input, objects, board, curObj);
 		CheckChangeObject(objects, curObj, board);
+		SetNewSpeed(frameUpdate);
+		lost = CheckLines(board, objects, curObj);
 
-	} while (inKey != input[(int)KEYS::Back]);
+	} while (inKey != input[(int)KEYS::Back] && !lost);
 }
 
 void FrameUpdate(CELL board[maxX][maxY], OBJECTS& obj, OBJS curObj)
@@ -28,7 +32,7 @@ void FrameUpdate(CELL board[maxX][maxY], OBJECTS& obj, OBJS curObj)
 	FallObject(obj, board, curObj);
 }
 
-void CheckLines(CELL board[maxX][maxY])
+bool CheckLines(CELL board[maxX][maxY], OBJECTS obj, OBJS curObj)
 {
 	for (int y = maxY - 1; y >= 0; y--)
 	{
@@ -41,12 +45,37 @@ void CheckLines(CELL board[maxX][maxY])
 		}
 
 		if (fullLine)
-			DestroyLine(board);
+			DestroyLine(board, y, obj, curObj);
 	}
+
+	for (int x = 0; x < maxX; x++)
+	{
+		if (board[x][0].state != CELLSTATE::Empty)
+			return true;
+	}
+
+	return false;
 }
 
-void DestroyLine(CELL board[maxX][maxY])
+void DestroyLine(CELL board[maxX][maxY], int line, OBJECTS obj, OBJS curObj)
 {
+	for (int x = 0; x < maxX; x++)
+	{
+		board[x][line].color = defColor;
+		board[x][line].state = CELLSTATE::Empty;
+	}
+	DrawBoard(board, obj, curObj);
+
+	for (int y = line; y > 0; y--)
+	{
+		for (int x = 0; x < maxX; x++)
+		{
+			board[x][y].color = board[x][y - 1].color;
+			board[x][y].state = board[x][y - 1].state;
+		}
+
+		DrawBoard(board, obj, curObj);
+	}
 }
 
 void FallObject(OBJECTS& obj, CELL board[maxX][maxY], OBJS curObj)
@@ -485,9 +514,9 @@ KEYS GetKeys(char& inKey, char input[])
 		{
 			return KEYS::DropDown;
 		}
-
-		return KEYS::None;
 	}
+
+	return KEYS::None;
 }
 
 void ExecuteInput(char& inKey, char input[], OBJECTS& obj, CELL board[maxX][maxY], OBJS curObj)
@@ -614,11 +643,21 @@ void DrawBoard(CELL board[maxX][maxY], OBJECTS obj, OBJS curObj)
 
 	for (int y = 0; y < maxY; y++)
 	{
+		for (int i = 0; i < boardIndent; i++)
+		{
+			std::cout << " ";
+		}
+
 		std::cout << wall.ver;
 		for (int x = 0; x < maxX; x++)
 		{
 			SetColor(board[x][y].color);
-			std::cout << "  ";
+
+			if (board[x][y].state == CELLSTATE::Empty)
+				std::cout << "  ";
+			else
+				std::cout << sqr << sqr;
+
 			SetColor(defColor);
 		}
 		std::cout << wall.ver << std::endl;
@@ -631,6 +670,11 @@ void DrawBoard(CELL board[maxX][maxY], OBJECTS obj, OBJS curObj)
 void DrawFirstLine(int size)
 {
 	WALLS wall;
+
+	for (int i = 0; i < boardIndent; i++)
+	{
+		std::cout << " ";
+	}
 
 	std::cout << wall.upLeftC;
 
@@ -645,6 +689,11 @@ void DrawFirstLine(int size)
 void DrawLastLine(int size)
 {
 	WALLS wall;
+
+	for (int i = 0; i < boardIndent; i++)
+	{
+		std::cout << " ";
+	}
 
 	std::cout << wall.lowLeftC;
 
@@ -706,4 +755,12 @@ void PlaceObjects(OBJECTS& obj, OBJS curObj)
 	default:
 		break;
 	}
+}
+
+void SetNewSpeed(int& frameUpdate)
+{
+	int speedUpdateTime = 20000;
+
+	if (frameUpdate > 200 && clock() % speedUpdateTime == 0)
+		frameUpdate /= 2;
 }

@@ -109,16 +109,16 @@ void Stick::Draw()
 	SetColor(color);
 
 	cursor.gotoxy(ConLoc(centerLeft));
-	std::cout << "  ";
+	std::cout << sqr << sqr;
 
 	cursor.gotoxy(ConLoc(left));
-	std::cout << "  ";
+	std::cout << sqr << sqr;
 
 	cursor.gotoxy(ConLoc(right));
-	std::cout << "  ";
+	std::cout << sqr << sqr;
 
 	cursor.gotoxy(ConLoc(centerRight));
-	std::cout << "  ";
+	std::cout << sqr << sqr;
 
 	SetColor(defColor);
 	cursor.gotoxy(txtPos);

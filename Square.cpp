@@ -71,16 +71,16 @@ void Square::Draw()
 	SetColor(color);
 
 	cursor.gotoxy(ConLoc(upLeft));
-	std::cout << "  ";
+	std::cout << sqr << sqr;
 
 	cursor.gotoxy(ConLoc(upRight));
-	std::cout << "  ";
+	std::cout << sqr << sqr;
 
 	cursor.gotoxy(ConLoc(lowLeft));
-	std::cout << "  ";
+	std::cout << sqr << sqr;
 
 	cursor.gotoxy(ConLoc(lowRight));
-	std::cout << "  ";
+	std::cout << sqr << sqr;
 
 	SetColor(defColor);
 	cursor.gotoxy(txtPos);
