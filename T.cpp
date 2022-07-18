@@ -1,27 +1,5 @@
 #include "T.h"
 
-COLDIR T::GetCollisions(CELL board[maxX][maxY])
-{
-	if (DownCollideCell(board, center) || DownCollideCell(board, left)
-		|| DownCollideCell(board, right) || DownCollideCell(board, down))
-	{
-		QuitFalling(board);
-		return COLDIR::Down;
-	}
-	else if (LeftCollideCell(board, center) || LeftCollideCell(board, left)
-		|| LeftCollideCell(board, right) || LeftCollideCell(board, down))
-	{
-		return COLDIR::Left;
-	}
-	else if (RightCollideCell(board, center) || RightCollideCell(board, left)
-		|| RightCollideCell(board, right) || RightCollideCell(board, down))
-	{
-		return COLDIR::Right;
-	}
-
-	return COLDIR::None;
-}
-
 bool T::DownCollideCell(CELL board[maxX][maxY], COORDS cell)
 {
 	return (board[cell.x][cell.y + 1].state == CELLSTATE::Static || cell.y >= maxY - 1);
@@ -100,6 +78,28 @@ void T::Kick()
 	{
 		MoveRight();
 	}
+}
+
+COLDIR T::GetCollisions(CELL board[maxX][maxY])
+{
+	if (DownCollideCell(board, center) || DownCollideCell(board, left)
+		|| DownCollideCell(board, right) || DownCollideCell(board, down))
+	{
+		QuitFalling(board);
+		return COLDIR::Down;
+	}
+	else if (LeftCollideCell(board, center) || LeftCollideCell(board, left)
+		|| LeftCollideCell(board, right) || LeftCollideCell(board, down))
+	{
+		return COLDIR::Left;
+	}
+	else if (RightCollideCell(board, center) || RightCollideCell(board, left)
+		|| RightCollideCell(board, right) || RightCollideCell(board, down))
+	{
+		return COLDIR::Right;
+	}
+
+	return COLDIR::None;
 }
 
 void T::Draw()

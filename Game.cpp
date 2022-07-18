@@ -37,19 +37,17 @@ void FallObject(OBJECTS& obj, CELL board[maxX][maxY], OBJS curObj)
 
 	case OBJS::T:
 		if (obj.t.GetCollisions(board) != COLDIR::Down)
-		{
 			obj.t.FallOne();
-		}
 		break;
 
 	case OBJS::Square:
 		if (obj.square.GetCollisions(board) != COLDIR::Down)
-		{
 			obj.square.FallOne();
-		}
 		break;
 
 	case OBJS::Stick:
+		if (obj.stick.GetCollisions(board) != COLDIR::Down)
+			obj.stick.FallOne();
 		break;
 
 	case OBJS::LLeft:
@@ -93,6 +91,11 @@ void MoveObjectLeft(OBJECTS& obj, CELL board[maxX][maxY], OBJS curObj)
 		break;
 
 	case OBJS::Stick:
+		if (obj.stick.GetCollisions(board) != COLDIR::Left)
+		{
+			obj.stick.MoveLeft();
+			DrawBoard(board, obj, curObj);
+		}
 		break;
 
 	case OBJS::LLeft:
@@ -136,6 +139,11 @@ void MoveObjectRight(OBJECTS& obj, CELL board[maxX][maxY], OBJS curObj)
 		break;
 
 	case OBJS::Stick:
+		if (obj.stick.GetCollisions(board) != COLDIR::Right)
+		{
+			obj.stick.MoveRight();
+			DrawBoard(board, obj, curObj);
+		}
 		break;
 
 	case OBJS::LLeft:
@@ -171,6 +179,8 @@ void RotateObjectLeft(OBJECTS& obj, CELL board[maxX][maxY], OBJS curObj)
 		break;
 
 	case OBJS::Stick:
+		obj.stick.RotateLeft();
+		DrawBoard(board, obj, curObj);
 		break;
 
 	case OBJS::LLeft:
@@ -206,6 +216,8 @@ void RotateObjectRight(OBJECTS& obj, CELL board[maxX][maxY], OBJS curObj)
 		break;
 
 	case OBJS::Stick:
+		obj.stick.RotateRight();
+		DrawBoard(board, obj, curObj);
 		break;
 
 	case OBJS::LLeft:
@@ -255,6 +267,14 @@ void DropDown(OBJECTS& obj, CELL board[maxX][maxY], OBJS curObj)
 		break;
 
 	case OBJS::Stick:
+		for (int i = 0; i < maxY; i++)
+		{
+			if (obj.stick.GetCollisions(board) != COLDIR::Down)
+			{
+				obj.stick.FallOne();
+				DrawBoard(board, obj, curObj);
+			}
+		}
 		break;
 
 	case OBJS::LLeft:
@@ -290,6 +310,7 @@ void DrawObject(OBJECTS obj, CELL board[maxX][maxY], OBJS curObj)
 		break;
 
 	case OBJS::Stick:
+		obj.stick.Draw();
 		break;
 
 	case OBJS::LLeft:
@@ -418,6 +439,11 @@ void CheckChangeObject(OBJECTS& obj, OBJS& curObj, CELL board[maxX][maxY])
 		break;
 
 	case OBJS::Stick:
+		if (!obj.stick.current)
+		{
+			curObj = (OBJS)(rand() % objQty + 1);
+			PlaceObjects(obj, curObj);
+		}
 		break;
 
 	case OBJS::LLeft:
@@ -517,6 +543,7 @@ void PlaceObjects(OBJECTS& obj, OBJS curObj)
 		break;
 
 	case OBJS::Stick:
+		obj.stick.Place();
 		break;
 
 	case OBJS::LLeft:

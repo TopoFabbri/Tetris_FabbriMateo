@@ -144,6 +144,7 @@
     <ClInclude Include="Globals.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="Square.h" />
+    <ClInclude Include="Stick.h" />
     <ClInclude Include="T.h" />
   </ItemGroup>
   <ItemGroup>
@@ -152,6 +153,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Menu.cpp" />
     <ClCompile Include="Square.cpp" />
+    <ClCompile Include="Stick.cpp" />
     <ClCompile Include="T.cpp" />
     <ClCompile Include="Tools.cpp" />
   </ItemGroup>
