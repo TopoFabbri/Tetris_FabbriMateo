@@ -5,7 +5,6 @@
 void RunProgram();
 void Defaults();
 void Game();
-void hidecursor();
 
 void main()
 {
@@ -25,18 +24,10 @@ void Defaults()
     SetConsoleTitle(L"Tetris(?)");
     system("color 07");
     hidecursor();
+    SetFontSize(22);
 }
 
 void Game()
 {
     Menu();
-}
-
-void hidecursor()
-{
-    HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
-    CONSOLE_CURSOR_INFO info;
-    info.dwSize = 100;
-    info.bVisible = FALSE;
-    SetConsoleCursorInfo(consoleHandle, &info);
 }

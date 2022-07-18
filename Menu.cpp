@@ -32,6 +32,7 @@ void Menu()
 			break;
 
 		case MENUOPS::Menu:
+			system("cls");
 			PrintTitle("MENU");
 			MenuNavigator(3, buttonTxt, input, selector);
 

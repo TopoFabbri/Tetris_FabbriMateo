@@ -1,15 +1,70 @@
-#pragma once
+﻿#pragma once
 
+#include <iostream>
 #include <Windows.h>
 
 const int txtMaxLength = 10;
 const int maxButtons = 10;
-const int frameUpdate = 100;
+const int frameUpdate = 1000;
 
 struct COORDS
 {
 	int x;
 	int y;
+};
+
+enum class KEYS
+{
+	Up,
+	Left,
+	Down,
+	Right,
+	Enter,
+	Back,
+	None
+};
+
+enum COLORS
+{
+	BlueOnBlack = 9,
+	GreenOnBlack = 2,
+	RedOnBlack = 4,
+	PurpleOnBlack = 5,
+	YellowOnBlack = 6,
+	GrayOnBlack = 8,
+	CyanOnBlack = 11,
+	OrangeOnBlack = 12,
+	WhiteOnBlack = 15,
+	BlackOnBlue = 16,
+	BlackOnGreen = 32,
+	BlackOnRed = 64,
+	BlackOnPurple = 80,
+	WhiteOnPurple = 87,
+	BlackOnYellow = 96,
+	BlackOnGray = 128,
+	BlackOnWhite = 240,
+	BlueOnWhite = 241,
+	GreenOnWhite = 242,
+	CyanOnWhite = 243,
+	PurpleOnWhite = 245,
+	YellowOnWhite = 246,
+	OrangeOnWhite = 252,
+};
+
+struct WALLS
+{
+	const char upLeftC = 201;						// ╔
+	const char hor = 205;								// ═
+	const char upT = 203;								// ╦
+	const char upRightC = 187;							// ╗
+	const char ver = 186;								// ║
+	const char leftT = 204;								// ╠
+	const char cross = 206;								// ╬
+	const char rightT = 185;								// ╣
+	const char lowLeftC = 200;							// ╚
+	const char lowT = 202;								// ╩
+	const char lowRightC = 188;							// ╝
+
 };
 
 struct CUR
@@ -30,4 +85,18 @@ struct CUR
 	}
 };
 
+struct CELL
+{
+	CELLSTATE state = CELLSTATE::Empty;
+	COLORS color = defColor;
+};
+
 const COORDS initPiecePos{ 5, 0 };
+const COORDS txtPos{ 0, 30 };
+const COORDS pos0{ 0, 0 };
+const COLORS defColor = WhiteOnBlack;
+
+COORDS ConLoc(COORDS boardLoc);
+void SetColor(COLORS color);
+void hidecursor();
+void SetFontSize(int size);

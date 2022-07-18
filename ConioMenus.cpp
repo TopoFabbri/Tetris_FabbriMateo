@@ -66,7 +66,7 @@ int GetMenuInput(int& cursor, char input[], int opsQty)
 
 void PrintOptions(char displayText[10][10], int ops, int cursor)
 {
-	char wall[11] = { 201, 205, 203, 187, 186, 204, 206, 185, 200, 202, 188 };					 // Cell Walls variables
+	WALLS wall;
 
 	const short boxLength = 15;
 	const int boxSpace = 10;
@@ -77,30 +77,30 @@ void PrintOptions(char displayText[10][10], int ops, int cursor)
 
 	COORD curPos = { boxLength * ops, (short)line[0] };
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), curPos);
-	std::cout << wall[upLeftC];
+	std::cout << wall.upLeftC;
 	for (int i = 0; i < boxSpace; i++)
 	{
-		std::cout << wall[hor];
+		std::cout << wall.hor;
 	}
-	std::cout << wall[upRightC];
+	std::cout << wall.upRightC;
 
 	curPos = { (short)(boxLength * ops), (short)line[1] };
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), curPos);
-	std::cout << wall[ver];
+	std::cout << wall.ver;
 	for (int i = 0; i < boxSpace; i++)
 	{
 		std::cout << displayText[ops][i];
 	}
-	std::cout << wall[ver];
+	std::cout << wall.ver;
 
 	curPos = { (short)(boxLength * ops), (short)line[2] };
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), curPos);
-	std::cout << wall[lowLeftC];
+	std::cout << wall.lowLeftC;
 	for (int i = 0; i < boxSpace; i++)
 	{
-		std::cout << wall[hor];
+		std::cout << wall.hor;
 	}
-	std::cout << wall[lowRightC];
+	std::cout << wall.lowRightC;
 
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), WhiteOnBlack);
 
@@ -113,7 +113,7 @@ void PrintTitle(std::string title)
 	int titleLength = title.length();
 	CUR conCursor;
 
-	conCursor.gotoxy(0, 0);
+	conCursor.gotoxy({ 0, 0 });
 
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), BlackOnWhite);
 	for (int i = 0; i <= splashLength; i++)

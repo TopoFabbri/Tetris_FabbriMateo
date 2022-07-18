@@ -2,6 +2,7 @@
 
 #include "ConioMenus.h"
 #include "Globals.h"
+#include "Game.h"
 #include <time.h>
 
 enum class MENUOPS
