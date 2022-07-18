@@ -143,21 +143,27 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="Globals.h" />
     <ClInclude Include="LLeft.h" />
+    <ClInclude Include="LRight.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="Square.h" />
     <ClInclude Include="Stick.h" />
     <ClInclude Include="T.h" />
+    <ClInclude Include="ZLeft.h" />
+    <ClInclude Include="ZRight.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ConioMenus.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="LLeft.cpp" />
+    <ClCompile Include="LRight.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Menu.cpp" />
     <ClCompile Include="Square.cpp" />
     <ClCompile Include="Stick.cpp" />
     <ClCompile Include="T.cpp" />
     <ClCompile Include="Tools.cpp" />
+    <ClCompile Include="ZLeft.cpp" />
+    <ClCompile Include="ZRight.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

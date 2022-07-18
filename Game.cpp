@@ -28,6 +28,27 @@ void FrameUpdate(CELL board[maxX][maxY], OBJECTS& obj, OBJS curObj)
 	FallObject(obj, board, curObj);
 }
 
+void CheckLines(CELL board[maxX][maxY])
+{
+	for (int y = maxY - 1; y >= 0; y--)
+	{
+		bool fullLine = true;
+
+		for (int x = 0; x < maxX; x++)
+		{
+			if (board[x][y].state == CELLSTATE::Empty)
+				fullLine = false;
+		}
+
+		if (fullLine)
+			DestroyLine(board);
+	}
+}
+
+void DestroyLine(CELL board[maxX][maxY])
+{
+}
+
 void FallObject(OBJECTS& obj, CELL board[maxX][maxY], OBJS curObj)
 {
 	switch (curObj)
@@ -56,12 +77,18 @@ void FallObject(OBJECTS& obj, CELL board[maxX][maxY], OBJS curObj)
 		break;
 
 	case OBJS::LRight:
+		if (obj.lRight.GetCollisions(board) != COLDIR::Down)
+			obj.lRight.FallOne();
 		break;
 
 	case OBJS::ZLeft:
+		if (obj.zLeft.GetCollisions(board) != COLDIR::Down)
+			obj.zLeft.FallOne();
 		break;
 
 	case OBJS::ZRight:
+		if (obj.zRight.GetCollisions(board) != COLDIR::Down)
+			obj.zRight.FallOne();
 		break;
 
 	default:
@@ -109,12 +136,27 @@ void MoveObjectLeft(OBJECTS& obj, CELL board[maxX][maxY], OBJS curObj)
 		break;
 
 	case OBJS::LRight:
+		if (obj.lRight.GetCollisions(board) != COLDIR::Left)
+		{
+			obj.lRight.MoveLeft();
+			DrawBoard(board, obj, curObj);
+		}
 		break;
 
 	case OBJS::ZLeft:
+		if (obj.zLeft.GetCollisions(board) != COLDIR::Left)
+		{
+			obj.zLeft.MoveLeft();
+			DrawBoard(board, obj, curObj);
+		}
 		break;
 
 	case OBJS::ZRight:
+		if (obj.zRight.GetCollisions(board) != COLDIR::Left)
+		{
+			obj.zRight.MoveLeft();
+			DrawBoard(board, obj, curObj);
+		}
 		break;
 
 	default:
@@ -162,12 +204,27 @@ void MoveObjectRight(OBJECTS& obj, CELL board[maxX][maxY], OBJS curObj)
 		break;
 
 	case OBJS::LRight:
+		if (obj.lRight.GetCollisions(board) != COLDIR::Right)
+		{
+			obj.lRight.MoveRight();
+			DrawBoard(board, obj, curObj);
+		}
 		break;
 
 	case OBJS::ZLeft:
+		if (obj.zLeft.GetCollisions(board) != COLDIR::Right)
+		{
+			obj.zLeft.MoveRight();
+			DrawBoard(board, obj, curObj);
+		}
 		break;
 
 	case OBJS::ZRight:
+		if (obj.zRight.GetCollisions(board) != COLDIR::Right)
+		{
+			obj.zRight.MoveRight();
+			DrawBoard(board, obj, curObj);
+		}
 		break;
 
 	default:
@@ -201,12 +258,18 @@ void RotateObjectLeft(OBJECTS& obj, CELL board[maxX][maxY], OBJS curObj)
 		break;
 
 	case OBJS::LRight:
+		obj.lRight.RotateLeft();
+		DrawBoard(board, obj, curObj);
 		break;
 
 	case OBJS::ZLeft:
+		obj.zLeft.RotateLeft();
+		DrawBoard(board, obj, curObj);
 		break;
 
 	case OBJS::ZRight:
+		obj.zRight.RotateLeft();
+		DrawBoard(board, obj, curObj);
 		break;
 
 	default:
@@ -240,12 +303,18 @@ void RotateObjectRight(OBJECTS& obj, CELL board[maxX][maxY], OBJS curObj)
 		break;
 
 	case OBJS::LRight:
+		obj.lRight.RotateRight();
+		DrawBoard(board, obj, curObj);
 		break;
 
 	case OBJS::ZLeft:
+		obj.zLeft.RotateRight();
+		DrawBoard(board, obj, curObj);
 		break;
 
 	case OBJS::ZRight:
+		obj.zRight.RotateRight();
+		DrawBoard(board, obj, curObj);
 		break;
 
 	default:
@@ -305,12 +374,36 @@ void DropDown(OBJECTS& obj, CELL board[maxX][maxY], OBJS curObj)
 		break;
 
 	case OBJS::LRight:
+		for (int i = 0; i < maxY; i++)
+		{
+			if (obj.lRight.GetCollisions(board) != COLDIR::Down)
+			{
+				obj.lRight.FallOne();
+				DrawBoard(board, obj, curObj);
+			}
+		}
 		break;
 
 	case OBJS::ZLeft:
+		for (int i = 0; i < maxY; i++)
+		{
+			if (obj.zLeft.GetCollisions(board) != COLDIR::Down)
+			{
+				obj.zLeft.FallOne();
+				DrawBoard(board, obj, curObj);
+			}
+		}
 		break;
 
 	case OBJS::ZRight:
+		for (int i = 0; i < maxY; i++)
+		{
+			if (obj.zRight.GetCollisions(board) != COLDIR::Down)
+			{
+				obj.zRight.FallOne();
+				DrawBoard(board, obj, curObj);
+			}
+		}
 		break;
 
 	default:
@@ -342,12 +435,15 @@ void DrawObject(OBJECTS obj, CELL board[maxX][maxY], OBJS curObj)
 		break;
 
 	case OBJS::LRight:
+		obj.lRight.Draw();
 		break;
 
 	case OBJS::ZLeft:
+		obj.zLeft.Draw();
 		break;
 
 	case OBJS::ZRight:
+		obj.zRight.Draw();
 		break;
 
 	default:
@@ -480,12 +576,27 @@ void CheckChangeObject(OBJECTS& obj, OBJS& curObj, CELL board[maxX][maxY])
 		break;
 
 	case OBJS::LRight:
+		if (!obj.lRight.current)
+		{
+			curObj = (OBJS)(rand() % objQty + 1);
+			PlaceObjects(obj, curObj);
+		}
 		break;
 
 	case OBJS::ZLeft:
+		if (!obj.zLeft.current)
+		{
+			curObj = (OBJS)(rand() % objQty + 1);
+			PlaceObjects(obj, curObj);
+		}
 		break;
 
 	case OBJS::ZRight:
+		if (!obj.zRight.current)
+		{
+			curObj = (OBJS)(rand() % objQty + 1);
+			PlaceObjects(obj, curObj);
+		}
 		break;
 
 	default:
@@ -581,12 +692,15 @@ void PlaceObjects(OBJECTS& obj, OBJS curObj)
 		break;
 
 	case OBJS::LRight:
+		obj.lRight.Place();
 		break;
 
 	case OBJS::ZLeft:
+		obj.zLeft.Place();
 		break;
 
 	case OBJS::ZRight:
+		obj.zRight.Place();
 		break;
 
 	default:

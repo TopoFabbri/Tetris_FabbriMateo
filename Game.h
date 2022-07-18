@@ -5,6 +5,9 @@
 #include "Square.h"
 #include "Stick.h"
 #include "LLeft.h"
+#include "LRight.h"
+#include "ZLeft.h"
+#include "ZRight.h"
 #include <conio.h>
 
 enum class OBJS
@@ -19,7 +22,7 @@ enum class OBJS
 	ZRight
 };
 
-const int objQty = 4;
+const int objQty = 7;
 
 struct OBJECTS
 {
@@ -27,11 +30,16 @@ struct OBJECTS
 	Square square;
 	Stick stick;
 	LLeft lLeft;
+	LRight lRight;
+	ZLeft zLeft;
+	ZRight zRight;
 };
 
 KEYS GetKeys(char& inKey, char input[]);
 void FrameUpdate(CELL board[maxX][maxY], OBJECTS& obj, OBJS curObj);
 void ExecuteInput(char& inKey, char input[], OBJECTS& obj, CELL board[maxX][maxY], OBJS curObj);
+void CheckLines(CELL board[maxX][maxY]);
+void DestroyLine(CELL board[maxX][maxY]);
 void FallObject(OBJECTS& obj, CELL board[maxX][maxY], OBJS curObj);
 void RotateObjectLeft(OBJECTS& obj, CELL board[maxX][maxY], OBJS curObj);
 void RotateObjectRight(OBJECTS& obj, CELL board[maxX][maxY], OBJS curObj);

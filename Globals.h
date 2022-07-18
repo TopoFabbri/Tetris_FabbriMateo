@@ -64,6 +64,7 @@ enum COLORS
 	WhiteOnPurple = 87,
 	BlackOnYellow = 96,
 	BlackOnGray = 128,
+	BlackOnOrange = 192,
 	BlackOnWhite = 240,
 	BlueOnWhite = 241,
 	GreenOnWhite = 242,
