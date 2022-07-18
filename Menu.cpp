@@ -4,7 +4,7 @@ void Menu()
 {
 	MENUOPS Nav = MENUOPS::Menu;
 
-	char input[20] = { 'w', 'a', 's', 'd', '1', '0' };
+	char input[20] = { 'w', 'a', 's', 'd', '1', '0', '4', '6', ' '};
 	char buttonTxt[txtMaxLength][maxButtons]
 	{
 		{' ', ' ', ' ', 'P', 'L', 'A', 'Y', ' ', ' ', ' '},

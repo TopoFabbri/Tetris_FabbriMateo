@@ -5,7 +5,7 @@
 
 const int txtMaxLength = 10;
 const int maxButtons = 10;
-const int frameUpdate = 100;
+const int frameUpdate = 1000;
 const int maxX = 10;
 const int maxY = 24;
 
@@ -39,6 +39,9 @@ enum class KEYS
 	Right,
 	Enter,
 	Back,
+	RotateL,
+	RotateR,
+	DropDown,
 	None
 };
 

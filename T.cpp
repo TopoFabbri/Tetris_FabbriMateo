@@ -5,18 +5,7 @@ COLDIR T::GetCollisions(CELL board[maxX][maxY])
 	if (DownCollideCell(board, center) || DownCollideCell(board, left)
 		|| DownCollideCell(board, right) || DownCollideCell(board, down))
 	{
-		board[center.x][center.y].color = color;
-		board[center.x][center.y].state = CELLSTATE::Static;
-
-		board[left.x][left.y].color = color;
-		board[left.x][left.y].state = CELLSTATE::Static;
-
-		board[right.x][right.y].color = color;
-		board[right.x][right.y].state = CELLSTATE::Static;
-
-		board[down.x][down.y].color = color;
-		board[down.x][down.y].state = CELLSTATE::Static;
-
+		QuitFalling(board);
 		return COLDIR::Down;
 	}
 	else if (LeftCollideCell(board, center) || LeftCollideCell(board, left)
@@ -35,7 +24,7 @@ COLDIR T::GetCollisions(CELL board[maxX][maxY])
 
 bool T::DownCollideCell(CELL board[maxX][maxY], COORDS cell)
 {
-	return (board[cell.x][cell.y - 1].state == CELLSTATE::Static || cell.y >= maxY - 1);
+	return (board[cell.x][cell.y + 1].state == CELLSTATE::Static || cell.y >= maxY - 1);
 }
 
 bool T::LeftCollideCell(CELL board[maxX][maxY], COORDS cell)
@@ -97,8 +86,20 @@ void T::RotationLeft()
 void T::RotationDown()
 {
 	left = { center.x + 1, center.y };
-	right = { center.x - 1, center.y - 1 };
+	right = { center.x - 1, center.y };
 	down = { center.x, center.y - 1 };
+}
+
+void T::Kick()
+{
+	if (left.x >= maxX - 1 || right.x >= maxX - 1 || down.x >= maxX - 1)
+	{
+		MoveLeft();
+	}
+	else if (left.x <= 0 || right.x <= 0 || down.x <= 0)
+	{
+		MoveRight();
+	}
 }
 
 void T::Draw()
@@ -121,6 +122,36 @@ void T::Draw()
 
 	SetColor(defColor);
 	cursor.gotoxy(txtPos);
+}
+
+void T::Place()
+{
+	current = true;
+	
+	center = initPiecePos;
+	left = { center.x - 1, center.y };
+	right = { center.x + 1, center.y };
+	down = { center.x, center.y + 1 };
+
+	rot = ROT::Up;
+	SetRotation();
+}
+
+void T::QuitFalling(CELL board[maxX][maxY])
+{
+	board[center.x][center.y].color = color;
+	board[center.x][center.y].state = CELLSTATE::Static;
+
+	board[left.x][left.y].color = color;
+	board[left.x][left.y].state = CELLSTATE::Static;
+
+	board[right.x][right.y].color = color;
+	board[right.x][right.y].state = CELLSTATE::Static;
+
+	board[down.x][down.y].color = color;
+	board[down.x][down.y].state = CELLSTATE::Static;
+
+	current = false;
 }
 
 void T::FallOne()
@@ -152,7 +183,10 @@ void T::RotateRight()
 	if (rot != ROT::Left)
 		rot = (ROT)((int)rot + 1);
 	else
-		rot == ROT::Up;
+		rot = ROT::Up;
+
+	SetRotation();
+	Kick();
 }
 
 void T::RotateLeft()
@@ -160,9 +194,8 @@ void T::RotateLeft()
 	if (rot != ROT::Up)
 		rot = (ROT)((int)rot - 1);
 	else
-		rot == ROT::Left;
-}
+		rot = ROT::Left;
 
-void T::DropDown()
-{
+	SetRotation();
+	Kick();
 }
