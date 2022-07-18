@@ -4,6 +4,7 @@
 #include "T.h"
 #include "Square.h"
 #include "Stick.h"
+#include "LLeft.h"
 #include <conio.h>
 
 enum class OBJS
@@ -18,13 +19,14 @@ enum class OBJS
 	ZRight
 };
 
-const int objQty = 3;
+const int objQty = 4;
 
 struct OBJECTS
 {
 	T t;
 	Square square;
 	Stick stick;
+	LLeft lLeft;
 };
 
 KEYS GetKeys(char& inKey, char input[]);

@@ -51,6 +51,8 @@ void FallObject(OBJECTS& obj, CELL board[maxX][maxY], OBJS curObj)
 		break;
 
 	case OBJS::LLeft:
+		if (obj.lLeft.GetCollisions(board) != COLDIR::Down)
+			obj.lLeft.FallOne();
 		break;
 
 	case OBJS::LRight:
@@ -99,6 +101,11 @@ void MoveObjectLeft(OBJECTS& obj, CELL board[maxX][maxY], OBJS curObj)
 		break;
 
 	case OBJS::LLeft:
+		if (obj.lLeft.GetCollisions(board) != COLDIR::Left)
+		{
+			obj.lLeft.MoveLeft();
+			DrawBoard(board, obj, curObj);
+		}
 		break;
 
 	case OBJS::LRight:
@@ -147,6 +154,11 @@ void MoveObjectRight(OBJECTS& obj, CELL board[maxX][maxY], OBJS curObj)
 		break;
 
 	case OBJS::LLeft:
+		if (obj.lLeft.GetCollisions(board) != COLDIR::Right)
+		{
+			obj.lLeft.MoveRight();
+			DrawBoard(board, obj, curObj);
+		}
 		break;
 
 	case OBJS::LRight:
@@ -184,6 +196,8 @@ void RotateObjectLeft(OBJECTS& obj, CELL board[maxX][maxY], OBJS curObj)
 		break;
 
 	case OBJS::LLeft:
+		obj.lLeft.RotateLeft();
+		DrawBoard(board, obj, curObj);
 		break;
 
 	case OBJS::LRight:
@@ -221,6 +235,8 @@ void RotateObjectRight(OBJECTS& obj, CELL board[maxX][maxY], OBJS curObj)
 		break;
 
 	case OBJS::LLeft:
+		obj.lLeft.RotateRight();
+		DrawBoard(board, obj, curObj);
 		break;
 
 	case OBJS::LRight:
@@ -278,6 +294,14 @@ void DropDown(OBJECTS& obj, CELL board[maxX][maxY], OBJS curObj)
 		break;
 
 	case OBJS::LLeft:
+		for (int i = 0; i < maxY; i++)
+		{
+			if (obj.lLeft.GetCollisions(board) != COLDIR::Down)
+			{
+				obj.lLeft.FallOne();
+				DrawBoard(board, obj, curObj);
+			}
+		}
 		break;
 
 	case OBJS::LRight:
@@ -314,6 +338,7 @@ void DrawObject(OBJECTS obj, CELL board[maxX][maxY], OBJS curObj)
 		break;
 
 	case OBJS::LLeft:
+		obj.lLeft.Draw();
 		break;
 
 	case OBJS::LRight:
@@ -447,6 +472,11 @@ void CheckChangeObject(OBJECTS& obj, OBJS& curObj, CELL board[maxX][maxY])
 		break;
 
 	case OBJS::LLeft:
+		if (!obj.lLeft.current)
+		{
+			curObj = (OBJS)(rand() % objQty + 1);
+			PlaceObjects(obj, curObj);
+		}
 		break;
 
 	case OBJS::LRight:
@@ -547,6 +577,7 @@ void PlaceObjects(OBJECTS& obj, OBJS curObj)
 		break;
 
 	case OBJS::LLeft:
+		obj.lLeft.Place();
 		break;
 
 	case OBJS::LRight:

@@ -78,15 +78,6 @@ void Stick::Kick()
 	{
 		MoveRight();
 	}
-
-	if (left.x >= maxX - 1 || right.x >= maxX - 1 || centerRight.x >= maxX - 1)
-	{
-		MoveLeft();
-	}
-	else if (left.x <= 0 || right.x <= 0 || centerRight.x <= 0)
-	{
-		MoveRight();
-	}
 }
 
 COLDIR Stick::GetCollisions(CELL board[maxX][maxY])
