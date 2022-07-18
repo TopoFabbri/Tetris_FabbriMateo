@@ -5,12 +5,30 @@
 
 const int txtMaxLength = 10;
 const int maxButtons = 10;
-const int frameUpdate = 1000;
+const int frameUpdate = 100;
+const int maxX = 10;
+const int maxY = 24;
+
+enum class ROT
+{
+	Up,
+	Right,
+	Down,
+	Left,
+};
 
 struct COORDS
 {
 	int x;
 	int y;
+};
+
+enum class COLDIR
+{
+	None,
+	Left,
+	Right,
+	Down,
 };
 
 enum class KEYS
@@ -51,6 +69,13 @@ enum COLORS
 	OrangeOnWhite = 252,
 };
 
+enum class CELLSTATE
+{
+	Empty,
+	Moving,
+	Static
+};
+
 struct WALLS
 {
 	const char upLeftC = 201;						// ╔
@@ -85,6 +110,8 @@ struct CUR
 	}
 };
 
+const COLORS defColor = WhiteOnBlack;
+
 struct CELL
 {
 	CELLSTATE state = CELLSTATE::Empty;
@@ -94,7 +121,6 @@ struct CELL
 const COORDS initPiecePos{ 5, 0 };
 const COORDS txtPos{ 0, 30 };
 const COORDS pos0{ 0, 0 };
-const COLORS defColor = WhiteOnBlack;
 
 COORDS ConLoc(COORDS boardLoc);
 void SetColor(COLORS color);

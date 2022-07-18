@@ -2,49 +2,59 @@
 
 void Play(char input[])
 {
-	char board[maxX][maxY];
+	CELL board[maxX][maxY];
 	OBJECTS objects;
 	char inKey = ' ';
 
 
 	system("cls");
+	ResetBoard(board);
 
 	do
 	{
-		ResetBoard(board);
 		if (clock() % frameUpdate == 0)
 			FrameUpdate(board, objects);
+
 		ExecuteInput(inKey, input, objects, board);
 
 	} while (inKey != input[(int)KEYS::Back]);
 }
 
-void FrameUpdate(char board[maxX][maxY], OBJECTS& obj)
+void FrameUpdate(CELL board[maxX][maxY], OBJECTS& obj)
 {
 	DrawBoard(board, obj);
-	FallObject(obj);
+	FallObject(obj, board);
 }
 
-void FallObject(OBJECTS& obj)
+void FallObject(OBJECTS& obj, CELL board[maxX][maxY])
 {
-	obj.t.FallOne();
+	if (obj.t.GetCollisions(board) != COLDIR::Down)
+	{
+		obj.t.FallOne();
+	}
 }
 
-void DrawObject(OBJECTS obj, char board[maxX][maxY])
+void DrawObject(OBJECTS obj, CELL board[maxX][maxY])
 {
 	obj.t.Draw();
 }
 
-void MoveObjectLeft(OBJECTS& obj, char board[maxX][maxY])
+void MoveObjectLeft(OBJECTS& obj, CELL board[maxX][maxY])
 {
-	obj.t.MoveLeft();
-	DrawBoard(board, obj);
+	if (obj.t.GetCollisions(board) != COLDIR::Left)
+	{
+		obj.t.MoveLeft();
+		DrawBoard(board, obj);
+	}
 }
 
-void MoveObjectRight(OBJECTS& obj, char board[maxX][maxY])
+void MoveObjectRight(OBJECTS& obj, CELL board[maxX][maxY])
 {
-	obj.t.MoveRight();
-	DrawBoard(board, obj);
+	if (obj.t.GetCollisions(board) != COLDIR::Right)
+	{
+		obj.t.MoveRight();
+		DrawBoard(board, obj);
+	}
 }
 
 KEYS GetKeys(char& inKey, char input[])
@@ -74,7 +84,7 @@ KEYS GetKeys(char& inKey, char input[])
 	}
 }
 
-void ExecuteInput(char& inKey, char input[], OBJECTS& obj, char board[maxX][maxY])
+void ExecuteInput(char& inKey, char input[], OBJECTS& obj, CELL board[maxX][maxY])
 {
 	KEYS action = GetKeys(inKey, input);
 
@@ -108,7 +118,7 @@ void ExecuteInput(char& inKey, char input[], OBJECTS& obj, char board[maxX][maxY
 	}
 }
 
-void DrawBoard(char board[maxX][maxY], OBJECTS obj)
+void DrawBoard(CELL board[maxX][maxY], OBJECTS obj)
 {
 	WALLS wall;
 	CUR cursor;
@@ -121,7 +131,9 @@ void DrawBoard(char board[maxX][maxY], OBJECTS obj)
 		std::cout << wall.ver;
 		for (int x = 0; x < maxX; x++)
 		{
-			std::cout << board[x][y] << board[x][y];
+			SetColor(board[x][y].color);
+			std::cout << "  ";
+			SetColor(defColor);
 		}
 		std::cout << wall.ver << std::endl;
 	}
@@ -158,13 +170,14 @@ void DrawLastLine(int size)
 	std::cout << wall.lowRightC << std::endl;
 }
 
-void ResetBoard(char board[maxX][maxY])
+void ResetBoard(CELL board[maxX][maxY])
 {
 	for (int y = 0; y < maxY; y++)
 	{
 		for (int x = 0; x < maxX; x++)
 		{
-			board[x][y] = ' ';
+			board[x][y].color = defColor;
+			board[x][y].state = CELLSTATE::Empty;
 		}
 	}
 }
