@@ -364,7 +364,6 @@ void DropDown(OBJECTS& obj, CELL board[maxX][maxY], OBJS curObj)
 			if (obj.t.GetCollisions(board) != COLDIR::Down)
 			{
 				obj.t.FallOne();
-				DrawBoard(board, obj, curObj);
 			}
 		}
 		break;
@@ -375,7 +374,6 @@ void DropDown(OBJECTS& obj, CELL board[maxX][maxY], OBJS curObj)
 			if (obj.square.GetCollisions(board) != COLDIR::Down)
 			{
 				obj.square.FallOne();
-				DrawBoard(board, obj, curObj);
 			}
 		}
 		break;
@@ -386,7 +384,6 @@ void DropDown(OBJECTS& obj, CELL board[maxX][maxY], OBJS curObj)
 			if (obj.stick.GetCollisions(board) != COLDIR::Down)
 			{
 				obj.stick.FallOne();
-				DrawBoard(board, obj, curObj);
 			}
 		}
 		break;
@@ -397,7 +394,6 @@ void DropDown(OBJECTS& obj, CELL board[maxX][maxY], OBJS curObj)
 			if (obj.lLeft.GetCollisions(board) != COLDIR::Down)
 			{
 				obj.lLeft.FallOne();
-				DrawBoard(board, obj, curObj);
 			}
 		}
 		break;
@@ -408,7 +404,6 @@ void DropDown(OBJECTS& obj, CELL board[maxX][maxY], OBJS curObj)
 			if (obj.lRight.GetCollisions(board) != COLDIR::Down)
 			{
 				obj.lRight.FallOne();
-				DrawBoard(board, obj, curObj);
 			}
 		}
 		break;
@@ -419,7 +414,6 @@ void DropDown(OBJECTS& obj, CELL board[maxX][maxY], OBJS curObj)
 			if (obj.zLeft.GetCollisions(board) != COLDIR::Down)
 			{
 				obj.zLeft.FallOne();
-				DrawBoard(board, obj, curObj);
 			}
 		}
 		break;
@@ -430,7 +424,6 @@ void DropDown(OBJECTS& obj, CELL board[maxX][maxY], OBJS curObj)
 			if (obj.zRight.GetCollisions(board) != COLDIR::Down)
 			{
 				obj.zRight.FallOne();
-				DrawBoard(board, obj, curObj);
 			}
 		}
 		break;
