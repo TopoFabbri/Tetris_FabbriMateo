@@ -199,3 +199,33 @@ void Stick::RotateLeft()
 	SetRotation();
 	Kick();
 }
+
+void Stick::BurnOnBoard(CELL board[maxX][maxY])
+{
+	board[centerLeft.x][centerLeft.y].state = CELLSTATE::Moving;
+	board[centerLeft.x][centerLeft.y].color = color;
+
+	board[left.x][left.y].state = CELLSTATE::Moving;
+	board[left.x][left.y].color = color;
+
+	board[centerRight.x][centerRight.y].state = CELLSTATE::Moving;
+	board[centerRight.x][centerRight.y].color = color;
+
+	board[right.x][right.y].state = CELLSTATE::Moving;
+	board[right.x][right.y].color = color;
+}
+
+void Stick::EraseFromBoard(CELL board[maxX][maxY])
+{
+	board[centerLeft.x][centerLeft.y].state = CELLSTATE::Empty;
+	board[centerLeft.x][centerLeft.y].color = defColor;
+
+	board[left.x][left.y].state = CELLSTATE::Empty;
+	board[left.x][left.y].color = defColor;
+
+	board[centerRight.x][centerRight.y].state = CELLSTATE::Empty;
+	board[centerRight.x][centerRight.y].color = defColor;
+
+	board[right.x][right.y].state = CELLSTATE::Empty;
+	board[right.x][right.y].color = defColor;
+}

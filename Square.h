@@ -26,4 +26,6 @@ public:
 	void FallOne();
 	void MoveRight();
 	void MoveLeft();
+	void BurnOnBoard(CELL board[maxX][maxY]);
+	void EraseFromBoard(CELL board[maxX][maxY]);
 };

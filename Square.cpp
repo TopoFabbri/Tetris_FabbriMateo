@@ -109,3 +109,33 @@ void Square::MoveLeft()
 	lowLeft.x--;
 	lowRight.x--;
 }
+
+void Square::BurnOnBoard(CELL board[maxX][maxY])
+{
+	board[upLeft.x][upLeft.y].state = CELLSTATE::Moving;
+	board[upLeft.x][upLeft.y].color = color;
+
+	board[upRight.x][upRight.y].state = CELLSTATE::Moving;
+	board[upRight.x][upRight.y].color = color;
+
+	board[lowLeft.x][lowLeft.y].state = CELLSTATE::Moving;
+	board[lowLeft.x][lowLeft.y].color = color;
+
+	board[lowRight.x][lowRight.y].state = CELLSTATE::Moving;
+	board[lowRight.x][lowRight.y].color = color;
+}
+
+void Square::EraseFromBoard(CELL board[maxX][maxY])
+{
+	board[upLeft.x][upLeft.y].state = CELLSTATE::Empty;
+	board[upLeft.x][upLeft.y].color = defColor;
+
+	board[upRight.x][upRight.y].state = CELLSTATE::Empty;
+	board[upRight.x][upRight.y].color = defColor;
+
+	board[lowLeft.x][lowLeft.y].state = CELLSTATE::Empty;
+	board[lowLeft.x][lowLeft.y].color = defColor;
+
+	board[lowRight.x][lowRight.y].state = CELLSTATE::Empty;
+	board[lowRight.x][lowRight.y].color = defColor;
+}

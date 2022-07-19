@@ -34,4 +34,6 @@ public:
 	void MoveLeft();
 	void RotateRight();
 	void RotateLeft();
+	void BurnOnBoard(CELL board[maxX][maxY]);
+	void EraseFromBoard(CELL board[maxX][maxY]);
 };

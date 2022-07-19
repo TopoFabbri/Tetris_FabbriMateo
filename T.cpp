@@ -199,3 +199,33 @@ void T::RotateLeft()
 	SetRotation();
 	Kick();
 }
+
+void T::BurnOnBoard(CELL board[maxX][maxY])
+{
+	board[center.x][center.y].state = CELLSTATE::Moving;
+	board[center.x][center.y].color = color;
+
+	board[left.x][left.y].state = CELLSTATE::Moving;
+	board[left.x][left.y].color = color;
+
+	board[right.x][right.y].state = CELLSTATE::Moving;
+	board[right.x][right.y].color = color;
+
+	board[down.x][down.y].state = CELLSTATE::Moving;
+	board[down.x][down.y].color = color;
+}
+
+void T::EraseFromBoard(CELL board[maxX][maxY])
+{
+	board[center.x][center.y].state = CELLSTATE::Empty;
+	board[center.x][center.y].color = defColor;
+
+	board[left.x][left.y].state = CELLSTATE::Empty;
+	board[left.x][left.y].color = defColor;
+
+	board[right.x][right.y].state = CELLSTATE::Empty;
+	board[right.x][right.y].color = defColor;
+
+	board[down.x][down.y].state = CELLSTATE::Empty;
+	board[down.x][down.y].color = defColor;
+}
