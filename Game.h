@@ -77,6 +77,8 @@ void DrawObject(GAMEDATA gData);
 void DrawFirstLine(int size);
 void DrawLastLine(int size);
 void DrawBoard(GAMEDATA gData);
+void DrawControls(char input[]);
+void DrawKeys(int& line, std::string txt, char key);
 void DrawLine(GAMEDATA gData, int line);
 void ResetBoard(CELL board[maxX][maxY]);
 void CheckChangeObject(GAMEDATA& gData);

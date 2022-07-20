@@ -8,6 +8,7 @@ void Play(char input[])
 	system("cls");
 	ResetBoard(gData.board);
 	PlaceObjects(gData);
+	DrawControls(input);
 
 	gTime.init = clock();
 
@@ -41,7 +42,7 @@ bool ShouldDropFrame(TIME& gTime, GAMEDATA& gData)
 
 	fractionReached = (fractionReached < 1 ? 1 : fractionReached);
 
-	bool callFrame = (fractionReached > gData.frame);//(gData.frame < gData.frameRate);
+	bool callFrame = (fractionReached > gData.frame);
 	return callFrame;
 }
 
@@ -949,6 +950,50 @@ void DrawBoard(GAMEDATA gData)
 	DrawNextObject(gData);
 }
 
+void DrawControls(char input[])
+{
+	COORDS loc = { 5, 5 };
+	CUR cursor;
+
+	cursor.gotoxy(loc);
+	SetColor(BlueOnBlack);
+	std::cout << "Movement:";
+	loc.y++;
+
+	DrawKeys(loc.y, "Move Left", input[(int)KEYS::Left]);
+	DrawKeys(loc.y, "Move Right", input[(int)KEYS::Right]);
+
+	loc.y += 2;
+
+	cursor.gotoxy(loc);
+	SetColor(GreenOnBlack);
+	std::cout << "Rotation:";
+	loc.y++;
+
+	DrawKeys(loc.y, "Rotate Left", input[(int)KEYS::RotateL]);
+	DrawKeys(loc.y, "Rotate Right", input[(int)KEYS::RotateR]);
+
+	loc.y += 2;
+
+	cursor.gotoxy(loc);
+	SetColor(RedOnBlack);
+	std::cout << "Mechanics:";
+	loc.y++;
+
+	DrawKeys(loc.y, "Drop Down", input[(int)KEYS::DropDown]);
+}
+
+void DrawKeys(int& line, std::string txt, char key)
+{
+	CUR cur;
+	int posX = 10;
+
+	cur.gotoxy({ posX, line });
+	std::cout << "'" << key << "': " << txt;
+
+	line++;
+}
+
 void DrawLine(GAMEDATA gData, int line)
 {
 	WALLS wall;
@@ -1123,5 +1168,8 @@ void DrawFrames(GAMEDATA gData)
 	CUR cursor;
 
 	cursor.gotoxy({ 0, 0 });
-	printf("Speed: %d", gData.frameRate);
+	SetColor((COLORS)gData.frameRate);
+
+	std::cout << "SPEED: " << gData.frameRate;
+	SetColor(defColor);
 }
