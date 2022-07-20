@@ -17,3 +17,4 @@ enum class MENUOPS
 void Menu();
 void Credits(char input[]);
 void Settings(char input[]);
+void SetKeys(char input[]);
