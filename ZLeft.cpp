@@ -80,26 +80,45 @@ void ZLeft::Kick()
 	}
 }
 
-COLDIR ZLeft::GetCollisions(CELL board[maxX][maxY])
+void ZLeft::CheckOverlapedCell(CELL board[maxX][maxY])
+{
+	if (board[left.x][left.y].state == CELLSTATE::Static
+		|| board[downRight.x][downRight.y].state == CELLSTATE::Static
+		|| board[down.x][down.y].state == CELLSTATE::Static)
+	{
+		MoveUp();
+	}
+}
+
+bool ZLeft::DownColliding(CELL board[maxX][maxY])
 {
 	if (DownCollideCell(board, center) || DownCollideCell(board, left)
 		|| DownCollideCell(board, downRight) || DownCollideCell(board, down))
 	{
 		QuitFalling(board);
-		return COLDIR::Down;
+		return true;
 	}
-	else if (LeftCollideCell(board, center) || LeftCollideCell(board, left)
+	return false;
+}
+
+bool ZLeft::LeftColliding(CELL board[maxX][maxY])
+{
+	if (LeftCollideCell(board, center) || LeftCollideCell(board, left)
 		|| LeftCollideCell(board, downRight) || LeftCollideCell(board, down))
 	{
-		return COLDIR::Left;
+		return true;
 	}
-	else if (RightCollideCell(board, center) || RightCollideCell(board, left)
+	return false;
+}
+
+bool ZLeft::RightColliding(CELL board[maxX][maxY])
+{
+	if (RightCollideCell(board, center) || RightCollideCell(board, left)
 		|| RightCollideCell(board, downRight) || RightCollideCell(board, down))
 	{
-		return COLDIR::Right;
+		return true;
 	}
-
-	return COLDIR::None;
+	return false;
 }
 
 void ZLeft::Draw()
@@ -118,6 +137,30 @@ void ZLeft::Draw()
 	std::cout << sqr << sqr;
 
 	cursor.gotoxy(ConLoc(down));
+	std::cout << sqr << sqr;
+
+	SetColor(defColor);
+	cursor.gotoxy(txtPos);
+}
+
+void ZLeft::DrawAsNext()
+{
+	COORDS pivotPos = { boardIndent + 20 + maxX, 1 };
+	CUR cursor;
+	int cont = 2;
+
+	SetColor(color);
+
+	cursor.gotoxy({ pivotPos.x, pivotPos.y });
+	std::cout << sqr << sqr;
+
+	cursor.gotoxy({ pivotPos.x - cont, pivotPos.y });
+	std::cout << sqr << sqr;
+
+	cursor.gotoxy({ pivotPos.x + cont, pivotPos.y + 1 });
+	std::cout << sqr << sqr;
+
+	cursor.gotoxy({ pivotPos.x, pivotPos.y + 1 });
 	std::cout << sqr << sqr;
 
 	SetColor(defColor);
@@ -160,6 +203,14 @@ void ZLeft::FallOne()
 	left.y++;
 	downRight.y++;
 	down.y++;
+}
+
+void ZLeft::MoveUp()
+{
+	center.y--;
+	left.y--;
+	downRight.y--;
+	down.y--;
 }
 
 void ZLeft::MoveRight()

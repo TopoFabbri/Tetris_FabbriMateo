@@ -80,26 +80,45 @@ void T::Kick()
 	}
 }
 
-COLDIR T::GetCollisions(CELL board[maxX][maxY])
+void T::CheckOverlapedCell(CELL board[maxX][maxY])
+{
+	if (board[left.x][left.y].state == CELLSTATE::Static
+		|| board[right.x][right.y].state == CELLSTATE::Static
+		|| board[down.x][down.y].state == CELLSTATE::Static)
+	{
+		MoveUp();
+	}
+}
+
+bool T::DownColliding(CELL board[maxX][maxY])
 {
 	if (DownCollideCell(board, center) || DownCollideCell(board, left)
 		|| DownCollideCell(board, right) || DownCollideCell(board, down))
 	{
 		QuitFalling(board);
-		return COLDIR::Down;
+		return true;
 	}
-	else if (LeftCollideCell(board, center) || LeftCollideCell(board, left)
+	return false;
+}
+
+bool T::LeftColliding(CELL board[maxX][maxY])
+{
+	if (LeftCollideCell(board, center) || LeftCollideCell(board, left)
 		|| LeftCollideCell(board, right) || LeftCollideCell(board, down))
 	{
-		return COLDIR::Left;
+		return true;
 	}
-	else if (RightCollideCell(board, center) || RightCollideCell(board, left)
+	return false;
+}
+
+bool T::RightColliding(CELL board[maxX][maxY])
+{
+	if (RightCollideCell(board, center) || RightCollideCell(board, left)
 		|| RightCollideCell(board, right) || RightCollideCell(board, down))
 	{
-		return COLDIR::Right;
+		return true;
 	}
-
-	return COLDIR::None;
+	return false;
 }
 
 void T::Draw()
@@ -118,6 +137,30 @@ void T::Draw()
 	std::cout << sqr << sqr;
 
 	cursor.gotoxy(ConLoc(down));
+	std::cout << sqr << sqr;
+
+	SetColor(defColor);
+	cursor.gotoxy(txtPos);
+}
+
+void T::DrawAsNext()
+{
+	COORDS pivotPos = { boardIndent + 20 + maxX, 1 };
+	CUR cursor;
+	int cont = 2;
+
+	SetColor(color);
+
+	cursor.gotoxy(pivotPos);
+	std::cout << sqr << sqr;
+
+	cursor.gotoxy({ pivotPos.x - cont, pivotPos.y });
+	std::cout << sqr << sqr;
+
+	cursor.gotoxy({ pivotPos.x + cont, pivotPos.y });
+	std::cout << sqr << sqr;
+
+	cursor.gotoxy({ pivotPos.x, pivotPos.y + 1 });
 	std::cout << sqr << sqr;
 
 	SetColor(defColor);
@@ -160,6 +203,14 @@ void T::FallOne()
 	left.y++;
 	right.y++;
 	down.y++;
+}
+
+void T::MoveUp()
+{
+	center.y--;
+	left.y--;
+	right.y--;
+	down.y--;
 }
 
 void T::MoveRight()

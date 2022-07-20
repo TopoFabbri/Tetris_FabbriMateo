@@ -9,6 +9,10 @@
 #include "ZLeft.h"
 #include "ZRight.h"
 #include <conio.h>
+#include <time.h>
+
+const int objQty = 7;
+const int timeBomb = 2000;
 
 enum class OBJS
 {
@@ -22,7 +26,13 @@ enum class OBJS
 	ZRight
 };
 
-const int objQty = 7;
+struct TIME
+{
+	int init;
+	int elapsed;
+	int secsElapsed;
+	int counter = 0;
+};
 
 struct OBJECTS
 {
@@ -35,24 +45,44 @@ struct OBJECTS
 	ZRight zRight;
 };
 
-KEYS GetKeys(char& inKey, char input[]);
-bool CheckLines(CELL board[maxX][maxY], OBJECTS obj, OBJS curObj, int& score);
-void FrameUpdate(CELL board[maxX][maxY], OBJECTS& obj, OBJS curObj, int score);
-void ExecuteInput(char& inKey, char input[], OBJECTS& obj, CELL board[maxX][maxY], OBJS curObj, int score);
-void DestroyLine(CELL board[maxX][maxY], int line, OBJECTS obj, OBJS curObj, int score);
-void FallObject(OBJECTS& obj, CELL board[maxX][maxY], OBJS curObj);
-void RotateObjectLeft(OBJECTS& obj, CELL board[maxX][maxY], OBJS curObj, int score);
-void RotateObjectRight(OBJECTS& obj, CELL board[maxX][maxY], OBJS curObj, int score);
-void MoveObjectLeft(OBJECTS& obj, CELL board[maxX][maxY], OBJS curObj, int score);
-void MoveObjectRight(OBJECTS& obj, CELL board[maxX][maxY], OBJS curObj, int score);
-void DropDown(OBJECTS& obj, CELL board[maxX][maxY], OBJS curObj);
-void DrawObject(OBJECTS obj, CELL board[maxX][maxY], OBJS curObj);
+struct GAMEDATA
+{
+	CELL board[maxX][maxY];
+	OBJECTS obj;
+	OBJS nextObj = (OBJS)(rand() % objQty + 1);
+	OBJS curObj = (OBJS)(rand() % objQty + 1);
+	bool lost;
+	char inKey;
+	int score = 0;
+	int frameRate = defFrameUpdate;
+	int frame = 0;
+	int collisionTime;
+	bool collided = false;
+};
+
+KEYS GetKeys(GAMEDATA& gData, char input[]);
+bool CheckLines(GAMEDATA& gData);
+bool ShouldDropFrame(TIME& gTime, GAMEDATA gData);
+void FrameUpdate(GAMEDATA& gData);
+void ExecuteInput(GAMEDATA& gData, char input[]);
+void DestroyLine(GAMEDATA& gData, int line);
+COLORS GetOpposite(COLORS color);
+void FallObject(GAMEDATA& gData);
+void RotateObjectLeft(GAMEDATA& gData);
+void RotateObjectRight(GAMEDATA& gData);
+void MoveObjectLeft(GAMEDATA& gData);
+void MoveObjectRight(GAMEDATA& gData);
+void DropDown(GAMEDATA& gData);
+void DrawObject(GAMEDATA gData);
 void DrawFirstLine(int size);
 void DrawLastLine(int size);
-void DrawBoard(CELL board[maxX][maxY], OBJECTS obj, OBJS curObj, int score);
+void DrawBoard(GAMEDATA gData);
+void DrawLine(GAMEDATA gData, int line);
 void ResetBoard(CELL board[maxX][maxY]);
-void CheckChangeObject(OBJECTS& obj, OBJS& curObj, CELL board[maxX][maxY]);
+void CheckChangeObject(GAMEDATA& gData);
 void Play(char input[]);
-void PlaceObjects(OBJECTS& obj, OBJS curObj);
-void SetNewSpeed(int& frameUpdate);
+void PlaceObjects(GAMEDATA& gData);
+void SetNewSpeed(GAMEDATA& gData, TIME gTime);
+void CheckOverlaps(GAMEDATA& gData);
 void DrawScore(int score);
+void DrawNextObject(GAMEDATA gData);

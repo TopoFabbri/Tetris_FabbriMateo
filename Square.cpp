@@ -15,26 +15,35 @@ bool Square::RightCollideCell(CELL board[maxX][maxY], COORDS cell)
 	return (board[cell.x + 1][cell.y].state == CELLSTATE::Static || cell.x >= maxX - 1);
 }
 
-COLDIR Square::GetCollisions(CELL board[maxX][maxY])
+bool Square::DownColliding(CELL board[maxX][maxY])
 {
 	if (DownCollideCell(board, upLeft) || DownCollideCell(board, upRight)
 		|| DownCollideCell(board, lowLeft) || DownCollideCell(board, lowRight))
 	{
 		QuitFalling(board);
-		return COLDIR::Down;
+		return true;
 	}
-	else if (LeftCollideCell(board, upLeft) || LeftCollideCell(board, upRight)
+	return false;
+}
+
+bool Square::LeftColliding(CELL board[maxX][maxY])
+{
+	if (LeftCollideCell(board, upLeft) || LeftCollideCell(board, upRight)
 		|| LeftCollideCell(board, lowLeft) || LeftCollideCell(board, lowRight))
 	{
-		return COLDIR::Left;
+		return true;
 	}
-	else if (RightCollideCell(board, upLeft) || RightCollideCell(board, upRight)
+	return false;
+}
+
+bool Square::RightColliding(CELL board[maxX][maxY])
+{
+	if (RightCollideCell(board, upLeft) || RightCollideCell(board, upRight)
 		|| RightCollideCell(board, lowLeft) || RightCollideCell(board, lowRight))
 	{
-		return COLDIR::Right;
+		return true;
 	}
-
-	return COLDIR::None;
+	return false;
 }
 
 void Square::Place()
@@ -80,6 +89,30 @@ void Square::Draw()
 	std::cout << sqr << sqr;
 
 	cursor.gotoxy(ConLoc(lowRight));
+	std::cout << sqr << sqr;
+
+	SetColor(defColor);
+	cursor.gotoxy(txtPos);
+}
+
+void Square::DrawAsNext()
+{
+	COORDS pivotPos = { boardIndent + 20 + maxX, 1 };
+	CUR cursor;
+	int cont = 2;
+
+	SetColor(color);
+
+	cursor.gotoxy(pivotPos);
+	std::cout << sqr << sqr;
+
+	cursor.gotoxy({ pivotPos.x + cont, pivotPos.y });
+	std::cout << sqr << sqr;
+
+	cursor.gotoxy({ pivotPos.x, pivotPos.y + 1 });
+	std::cout << sqr << sqr;
+
+	cursor.gotoxy({ pivotPos.x + cont, pivotPos.y + 1 });
 	std::cout << sqr << sqr;
 
 	SetColor(defColor);

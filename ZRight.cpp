@@ -80,26 +80,48 @@ void ZRight::Kick()
 	}
 }
 
-COLDIR ZRight::GetCollisions(CELL board[maxX][maxY])
+void ZRight::CheckOverlapedCell(CELL board[maxX][maxY])
+{
+	if (board[downLeft.x][downLeft.y].state == CELLSTATE::Static
+		|| board[right.x][right.y].state == CELLSTATE::Static
+		|| board[down.x][down.y].state == CELLSTATE::Static)
+	{
+		MoveUp();
+	}
+}
+
+bool ZRight::DownColliding(CELL board[maxX][maxY])
 {
 	if (DownCollideCell(board, center) || DownCollideCell(board, downLeft)
 		|| DownCollideCell(board, right) || DownCollideCell(board, down))
 	{
 		QuitFalling(board);
-		return COLDIR::Down;
-	}
-	else if (LeftCollideCell(board, center) || LeftCollideCell(board, downLeft)
-		|| LeftCollideCell(board, right) || LeftCollideCell(board, down))
-	{
-		return COLDIR::Left;
-	}
-	else if (RightCollideCell(board, center) || RightCollideCell(board, downLeft)
-		|| RightCollideCell(board, right) || RightCollideCell(board, down))
-	{
-		return COLDIR::Right;
+		return true;
 	}
 
-	return COLDIR::None;
+	return false;
+}
+
+bool ZRight::LeftColliding(CELL board[maxX][maxY])
+{
+	if (LeftCollideCell(board, center) || LeftCollideCell(board, downLeft)
+		|| LeftCollideCell(board, right) || LeftCollideCell(board, down))
+	{
+		return true;
+	}
+
+	return false;
+}
+
+bool ZRight::RightColliding(CELL board[maxX][maxY])
+{
+	if (RightCollideCell(board, center) || RightCollideCell(board, downLeft)
+		|| RightCollideCell(board, right) || RightCollideCell(board, down))
+	{
+		return true;
+	}
+
+	return false;
 }
 
 void ZRight::Draw()
@@ -118,6 +140,30 @@ void ZRight::Draw()
 	std::cout << sqr << sqr;
 
 	cursor.gotoxy(ConLoc(down));
+	std::cout << sqr << sqr;
+
+	SetColor(defColor);
+	cursor.gotoxy(txtPos);
+}
+
+void ZRight::DrawAsNext()
+{
+	COORDS pivotPos = { boardIndent + 20 + maxX, 1 };
+	CUR cursor;
+	int cont = 2;
+
+	SetColor(color);
+
+	cursor.gotoxy({ pivotPos.x, pivotPos.y });
+	std::cout << sqr << sqr;
+
+	cursor.gotoxy({ pivotPos.x - cont, pivotPos.y + 1 });
+	std::cout << sqr << sqr;
+
+	cursor.gotoxy({ pivotPos.x + cont, pivotPos.y });
+	std::cout << sqr << sqr;
+
+	cursor.gotoxy({ pivotPos.x, pivotPos.y + 1 });
 	std::cout << sqr << sqr;
 
 	SetColor(defColor);
@@ -160,6 +206,14 @@ void ZRight::FallOne()
 	downLeft.y++;
 	right.y++;
 	down.y++;
+}
+
+void ZRight::MoveUp()
+{
+	center.y--;
+	downLeft.y--;
+	right.y--;
+	down.y--;
 }
 
 void ZRight::MoveRight()

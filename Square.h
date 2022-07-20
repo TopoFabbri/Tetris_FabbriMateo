@@ -19,10 +19,13 @@ private:
 public:
 	bool current = false;
 
-	COLDIR GetCollisions(CELL board[maxX][maxY]);
+	bool DownColliding(CELL board[maxX][maxY]);
+	bool LeftColliding(CELL board[maxX][maxY]);
+	bool RightColliding(CELL board[maxX][maxY]);
 	void Place();
 	void QuitFalling(CELL board[maxX][maxY]);
 	void Draw();
+	void DrawAsNext();
 	void FallOne();
 	void MoveRight();
 	void MoveLeft();

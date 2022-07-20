@@ -2,181 +2,302 @@
 
 void Play(char input[])
 {
-	CELL board[maxX][maxY];
-	OBJECTS objects;
-	OBJS curObj = (OBJS)(rand() % objQty + 1);
-	bool lost = false;
-	char inKey = '#';
-	int score = 0;
-	int frameUpdate = defFrameUpdate;
+	GAMEDATA gData;
+	TIME gTime;
 
 	system("cls");
-	ResetBoard(board);
-	PlaceObjects(objects, curObj);
+	ResetBoard(gData.board);
+	PlaceObjects(gData);
+
+	gTime.init = clock();
 
 	do
 	{
-		if (clock() % frameUpdate == 0)
-			FrameUpdate(board, objects, curObj, score);
+		if (ShouldDropFrame(gTime, gData))
+			FrameUpdate(gData);
 
-		ExecuteInput(inKey, input, objects, board, curObj, score);
-		CheckChangeObject(objects, curObj, board);
-		SetNewSpeed(frameUpdate);
-		lost = CheckLines(board, objects, curObj, score);
+		ExecuteInput(gData, input);
+		CheckChangeObject(gData);
+		SetNewSpeed(gData, gTime);
+		gData.lost = CheckLines(gData);
 
-	} while (inKey != input[(int)KEYS::Back] && !lost);
+	} while (gData.inKey != input[(int)KEYS::Back] && !gData.lost);
 }
 
-void FrameUpdate(CELL board[maxX][maxY], OBJECTS& obj, OBJS curObj, int score)
+bool ShouldDropFrame(TIME& gTime, GAMEDATA gData)
 {
-	DrawBoard(board, obj, curObj, score);
-	FallObject(obj, board, curObj);
+	gTime.elapsed = clock() - gTime.init;
+	gTime.secsElapsed = gTime.elapsed / 1000;
+
+	if (gTime.secsElapsed > gTime.counter)
+	{
+		gData.frame = 0;
+		gTime.counter++;
+	}
+
+	int fraction = 1000 / gData.frameRate;
+	int fractionReached = gTime.elapsed - gTime.secsElapsed * 1000;
+
+	bool callFrame = (gData.frame < gData.frameRate);
+	return callFrame;
 }
 
-bool CheckLines(CELL board[maxX][maxY], OBJECTS obj, OBJS curObj, int& score)
+void FrameUpdate(GAMEDATA& gData)
+{
+	gData.frame++;
+	DrawBoard(gData);
+	FallObject(gData);
+}
+
+bool CheckLines(GAMEDATA& gData)
 {
 	int rowsCleared = 0;
-	for (int y = maxY - 1; y >= 0; y--)
-	{
-		bool fullLine = true;
+	bool end = false;
 
-		for (int x = 0; x < maxX; x++)
+	do
+	{
+		for (int y = maxY - 1; y >= 0; y--)
 		{
-			if (board[x][y].state == CELLSTATE::Empty)
+			bool fullLine = true;
+
+			for (int x = 0; x < maxX; x++)
 			{
-				fullLine = false;
+				if (gData.board[x][y].state != CELLSTATE::Static)
+				{
+					fullLine = false;
+
+					end = y <= 0;
+					break;
+				}
+
+			}
+
+			if (fullLine)
+			{
+				rowsCleared++;
+				DestroyLine(gData, y);
 				break;
 			}
 		}
-
-		if (fullLine)
-		{
-			rowsCleared++;
-			DestroyLine(board, y, obj, curObj, score);
-		}
-	}
+	} while (!end);
 
 	switch (rowsCleared)
 	{
 	case 1:
-		score += 40;
+		gData.score += 40;
 		break;
 
 	case 2:
-		score += 100;
+		gData.score += 100;
 		break;
 
 	case 3:
-		score += 300;
+		gData.score += 300;
 		break;
 
 	case 4:
-		score += 1200;
+		gData.score += 1200;
 		break;
 
 	default:
 		break;
 	}
 
-	DrawScore(score);
+	DrawScore(gData.score);
 
 	for (int x = 0; x < maxX; x++)
 	{
-		if (board[x][0].state == CELLSTATE::Static)
+		if (gData.board[x][0].state == CELLSTATE::Static)
 			return true;
 	}
 
 	return false;
 }
 
-void DestroyLine(CELL board[maxX][maxY], int line, OBJECTS obj, OBJS curObj, int score)
+void DestroyLine(GAMEDATA& gData, int line)
 {
+	DrawBoard(gData);
 	for (int x = 0; x < maxX; x++)
 	{
-		board[x][line].color = defColor;
-		board[x][line].state = CELLSTATE::Empty;
+		gData.board[x][line].color = GetOpposite(gData.board[x][line].color);
+		gData.board[x][line].state = CELLSTATE::Empty;
 	}
-	DrawBoard(board, obj, curObj, score);
+	DrawLine(gData, line);
+	Sleep(150);
+
+	for (int x = 0; x < maxX; x++)
+	{
+		gData.board[x][line].color = GetOpposite(gData.board[x][line].color);
+	}
+	DrawLine(gData, line);
+	Sleep(150);
+
+	for (int x = 0; x < maxX; x++)
+	{
+		gData.board[x][line].color = BlackOnWhite;
+	}
+	DrawLine(gData, line);
+	Sleep(150);
+
+	for (int x = 0; x < maxX; x++)
+	{
+		gData.board[x][line].color = defColor;
+	}
+	DrawLine(gData, line);
 
 	for (int y = line; y > 0; y--)
 	{
 		for (int x = 0; x < maxX; x++)
 		{
-			board[x][y].color = board[x][y - 1].color;
-			board[x][y].state = board[x][y - 1].state;
+			gData.board[x][y].color = gData.board[x][y - 1].color;
+			gData.board[x][y].state = gData.board[x][y - 1].state;
 		}
 
-		DrawBoard(board, obj, curObj, score);
+		DrawLine(gData, y);
 	}
 }
 
-void FallObject(OBJECTS& obj, CELL board[maxX][maxY], OBJS curObj)
+COLORS GetOpposite(COLORS color)
 {
-	switch (curObj)
+	switch (color)
+	{
+	case BlackOnBlue:
+		return BlackOnYellow;
+		break;
+
+	case BlackOnGreen:
+		return BlackOnPurple;
+		break;
+
+	case BlackOnCyan:
+		return BlackOnOrange;
+		break;
+
+	case BlackOnRed:
+		return BlackOnLightBlue;
+		break;
+
+	case BlackOnPurple:
+		return BlackOnGreen;
+		break;
+
+	case BlackOnOrange:
+		return BlackOnCyan;
+		break;
+
+	case BlackOnYellow:
+		return BlackOnBlue;
+		break;
+
+	default:
+		break;
+	}
+
+	return defColor;
+}
+
+void FallObject(GAMEDATA& gData)
+{
+	switch (gData.curObj)
 	{
 	case OBJS::None:
 		break;
 
 	case OBJS::T:
-		if (obj.t.GetCollisions(board) != COLDIR::Down)
+		if (!gData.obj.t.DownColliding(gData.board))
 		{
-			obj.t.EraseFromBoard(board);
-			obj.t.FallOne();
-			obj.t.BurnOnBoard(board);
+			gData.obj.t.EraseFromBoard(gData.board);
+			gData.obj.t.FallOne();
+			gData.obj.t.BurnOnBoard(gData.board);
+		}
+		else
+		{
+			gData.collisionTime = clock();
+			gData.collided = true;
 		}
 		break;
 
 	case OBJS::Square:
-		if (obj.square.GetCollisions(board) != COLDIR::Down)
+		if (!gData.obj.square.DownColliding(gData.board))
 		{
-			obj.square.EraseFromBoard(board);
-			obj.square.FallOne();
-			obj.square.BurnOnBoard(board);
+			gData.obj.square.EraseFromBoard(gData.board);
+			gData.obj.square.FallOne();
+			gData.obj.square.BurnOnBoard(gData.board);
+		}
+		else
+		{
+			gData.collisionTime = clock();
+			gData.collided = true;
 		}
 		break;
 
 	case OBJS::Stick:
-		if (obj.stick.GetCollisions(board) != COLDIR::Down)
+		if (!gData.obj.stick.DownColliding(gData.board))
 		{
-			obj.stick.EraseFromBoard(board);
-			obj.stick.FallOne();
-			obj.stick.BurnOnBoard(board);
+			gData.obj.stick.EraseFromBoard(gData.board);
+			gData.obj.stick.FallOne();
+			gData.obj.stick.BurnOnBoard(gData.board);
+		}
+		else
+		{
+			gData.collisionTime = clock();
+			gData.collided = true;
 		}
 		break;
 
 	case OBJS::LLeft:
-		if (obj.lLeft.GetCollisions(board) != COLDIR::Down)
+		if (!gData.obj.lLeft.DownColliding(gData.board))
 		{
-			obj.lLeft.EraseFromBoard(board);
-			obj.lLeft.FallOne();
-			obj.lLeft.BurnOnBoard(board);
+			gData.obj.lLeft.EraseFromBoard(gData.board);
+			gData.obj.lLeft.FallOne();
+			gData.obj.lLeft.BurnOnBoard(gData.board);
+		}
+		else
+		{
+			gData.collisionTime = clock();
+			gData.collided = true;
 		}
 		break;
 
 	case OBJS::LRight:
-		if (obj.lRight.GetCollisions(board) != COLDIR::Down)
+		if (!gData.obj.lRight.DownColliding(gData.board))
 		{
-			obj.lRight.EraseFromBoard(board);
-			obj.lRight.FallOne();
-			obj.lRight.BurnOnBoard(board);
+			gData.obj.lRight.EraseFromBoard(gData.board);
+			gData.obj.lRight.FallOne();
+			gData.obj.lRight.BurnOnBoard(gData.board);
+		}
+		else
+		{
+			gData.collisionTime = clock();
+			gData.collided = true;
 		}
 		break;
 
 	case OBJS::ZLeft:
-		if (obj.zLeft.GetCollisions(board) != COLDIR::Down)
+		if (!gData.obj.zLeft.DownColliding(gData.board))
 		{
-			obj.zLeft.EraseFromBoard(board);
-			obj.zLeft.FallOne();
-			obj.zLeft.BurnOnBoard(board);
+			gData.obj.zLeft.EraseFromBoard(gData.board);
+			gData.obj.zLeft.FallOne();
+			gData.obj.zLeft.BurnOnBoard(gData.board);
+		}
+		else
+		{
+			gData.collisionTime = clock();
+			gData.collided = true;
 		}
 		break;
 
 	case OBJS::ZRight:
-		if (obj.zRight.GetCollisions(board) != COLDIR::Down)
+		if (!gData.obj.zRight.DownColliding(gData.board))
 		{
-			obj.zRight.EraseFromBoard(board);
-			obj.zRight.FallOne();
-			obj.zRight.BurnOnBoard(board);
+			gData.obj.zRight.EraseFromBoard(gData.board);
+			gData.obj.zRight.FallOne();
+			gData.obj.zRight.BurnOnBoard(gData.board);
+		}
+		else
+		{
+			gData.collisionTime = clock();
+			gData.collided = true;
 		}
 		break;
 
@@ -185,80 +306,80 @@ void FallObject(OBJECTS& obj, CELL board[maxX][maxY], OBJS curObj)
 	}
 }
 
-void MoveObjectLeft(OBJECTS& obj, CELL board[maxX][maxY], OBJS curObj, int score)
+void MoveObjectLeft(GAMEDATA& gData)
 {
-	switch (curObj)
+	switch (gData.curObj)
 	{
 	case OBJS::None:
 		break;
 
 	case OBJS::T:
-		if (obj.t.GetCollisions(board) != COLDIR::Left)
+		if (!gData.obj.t.LeftColliding(gData.board))
 		{
-			obj.t.EraseFromBoard(board);
-			obj.t.MoveLeft();
-			obj.t.BurnOnBoard(board);
-			DrawBoard(board, obj, curObj, score);
+			gData.obj.t.EraseFromBoard(gData.board);
+			gData.obj.t.MoveLeft();
+			gData.obj.t.BurnOnBoard(gData.board);
+			DrawBoard(gData);
 		}
 		break;
 
 	case OBJS::Square:
-		if (obj.square.GetCollisions(board) != COLDIR::Left)
+		if (!gData.obj.square.LeftColliding(gData.board))
 		{
-			obj.square.EraseFromBoard(board);
-			obj.square.MoveLeft();
-			obj.square.BurnOnBoard(board);
-			DrawBoard(board, obj, curObj, score);
+			gData.obj.square.EraseFromBoard(gData.board);
+			gData.obj.square.MoveLeft();
+			gData.obj.square.BurnOnBoard(gData.board);
+			DrawBoard(gData);
 		}
 		break;
 
 	case OBJS::Stick:
-		if (obj.stick.GetCollisions(board) != COLDIR::Left)
+		if (!gData.obj.stick.LeftColliding(gData.board))
 		{
-			obj.stick.EraseFromBoard(board);
-			obj.stick.MoveLeft();
-			obj.stick.BurnOnBoard(board);
-			DrawBoard(board, obj, curObj, score);
+			gData.obj.stick.EraseFromBoard(gData.board);
+			gData.obj.stick.MoveLeft();
+			gData.obj.stick.BurnOnBoard(gData.board);
+			DrawBoard(gData);
 		}
 		break;
 
 	case OBJS::LLeft:
-		if (obj.lLeft.GetCollisions(board) != COLDIR::Left)
+		if (!gData.obj.lLeft.LeftColliding(gData.board))
 		{
-			obj.lLeft.EraseFromBoard(board);
-			obj.lLeft.MoveLeft();
-			obj.lLeft.BurnOnBoard(board);
-			DrawBoard(board, obj, curObj, score);
+			gData.obj.lLeft.EraseFromBoard(gData.board);
+			gData.obj.lLeft.MoveLeft();
+			gData.obj.lLeft.BurnOnBoard(gData.board);
+			DrawBoard(gData);
 		}
 		break;
 
 	case OBJS::LRight:
-		if (obj.lRight.GetCollisions(board) != COLDIR::Left)
+		if (!gData.obj.lRight.LeftColliding(gData.board))
 		{
-			obj.lRight.EraseFromBoard(board);
-			obj.lRight.MoveLeft();
-			obj.lRight.BurnOnBoard(board);
-			DrawBoard(board, obj, curObj, score);
+			gData.obj.lRight.EraseFromBoard(gData.board);
+			gData.obj.lRight.MoveLeft();
+			gData.obj.lRight.BurnOnBoard(gData.board);
+			DrawBoard(gData);
 		}
 		break;
 
 	case OBJS::ZLeft:
-		if (obj.zLeft.GetCollisions(board) != COLDIR::Left)
+		if (!gData.obj.zLeft.LeftColliding(gData.board))
 		{
-			obj.zLeft.EraseFromBoard(board);
-			obj.zLeft.MoveLeft();
-			obj.zLeft.BurnOnBoard(board);
-			DrawBoard(board, obj, curObj, score);
+			gData.obj.zLeft.EraseFromBoard(gData.board);
+			gData.obj.zLeft.MoveLeft();
+			gData.obj.zLeft.BurnOnBoard(gData.board);
+			DrawBoard(gData);
 		}
 		break;
 
 	case OBJS::ZRight:
-		if (obj.zRight.GetCollisions(board) != COLDIR::Left)
+		if (!gData.obj.zRight.LeftColliding(gData.board))
 		{
-			obj.zRight.EraseFromBoard(board);
-			obj.zRight.MoveLeft();
-			obj.zRight.BurnOnBoard(board);
-			DrawBoard(board, obj, curObj, score);
+			gData.obj.zRight.EraseFromBoard(gData.board);
+			gData.obj.zRight.MoveLeft();
+			gData.obj.zRight.BurnOnBoard(gData.board);
+			DrawBoard(gData);
 		}
 		break;
 
@@ -267,80 +388,80 @@ void MoveObjectLeft(OBJECTS& obj, CELL board[maxX][maxY], OBJS curObj, int score
 	}
 }
 
-void MoveObjectRight(OBJECTS& obj, CELL board[maxX][maxY], OBJS curObj, int score)
+void MoveObjectRight(GAMEDATA& gData)
 {
-	switch (curObj)
+	switch (gData.curObj)
 	{
 	case OBJS::None:
 		break;
 
 	case OBJS::T:
-		if (obj.t.GetCollisions(board) != COLDIR::Right)
+		if (!gData.obj.t.RightColliding(gData.board))
 		{
-			obj.t.EraseFromBoard(board);
-			obj.t.MoveRight();
-			obj.t.BurnOnBoard(board);
-			DrawBoard(board, obj, curObj, score);
+			gData.obj.t.EraseFromBoard(gData.board);
+			gData.obj.t.MoveRight();
+			gData.obj.t.BurnOnBoard(gData.board);
+			DrawBoard(gData);
 		}
 		break;
 
 	case OBJS::Square:
-		if (obj.square.GetCollisions(board) != COLDIR::Right)
+		if (!gData.obj.square.RightColliding(gData.board))
 		{
-			obj.square.EraseFromBoard(board);
-			obj.square.MoveRight();
-			obj.square.BurnOnBoard(board);
-			DrawBoard(board, obj, curObj, score);
+			gData.obj.square.EraseFromBoard(gData.board);
+			gData.obj.square.MoveRight();
+			gData.obj.square.BurnOnBoard(gData.board);
+			DrawBoard(gData);
 		}
 		break;
 
 	case OBJS::Stick:
-		if (obj.stick.GetCollisions(board) != COLDIR::Right)
+		if (!gData.obj.stick.RightColliding(gData.board))
 		{
-			obj.stick.EraseFromBoard(board);
-			obj.stick.MoveRight();
-			obj.stick.BurnOnBoard(board);
-			DrawBoard(board, obj, curObj, score);
+			gData.obj.stick.EraseFromBoard(gData.board);
+			gData.obj.stick.MoveRight();
+			gData.obj.stick.BurnOnBoard(gData.board);
+			DrawBoard(gData);
 		}
 		break;
 
 	case OBJS::LLeft:
-		if (obj.lLeft.GetCollisions(board) != COLDIR::Right)
+		if (!gData.obj.lLeft.RightColliding(gData.board))
 		{
-			obj.lLeft.EraseFromBoard(board);
-			obj.lLeft.MoveRight();
-			obj.lLeft.BurnOnBoard(board);
-			DrawBoard(board, obj, curObj, score);
+			gData.obj.lLeft.EraseFromBoard(gData.board);
+			gData.obj.lLeft.MoveRight();
+			gData.obj.lLeft.BurnOnBoard(gData.board);
+			DrawBoard(gData);
 		}
 		break;
 
 	case OBJS::LRight:
-		if (obj.lRight.GetCollisions(board) != COLDIR::Right)
+		if (!gData.obj.lRight.RightColliding(gData.board))
 		{
-			obj.lRight.EraseFromBoard(board);
-			obj.lRight.MoveRight();
-			obj.lRight.BurnOnBoard(board);
-			DrawBoard(board, obj, curObj, score);
+			gData.obj.lRight.EraseFromBoard(gData.board);
+			gData.obj.lRight.MoveRight();
+			gData.obj.lRight.BurnOnBoard(gData.board);
+			DrawBoard(gData);
 		}
 		break;
 
 	case OBJS::ZLeft:
-		if (obj.zLeft.GetCollisions(board) != COLDIR::Right)
+		if (!gData.obj.zLeft.RightColliding(gData.board))
 		{
-			obj.zLeft.EraseFromBoard(board);
-			obj.zLeft.MoveRight();
-			obj.zLeft.BurnOnBoard(board);
-			DrawBoard(board, obj, curObj, score);
+			gData.obj.zLeft.EraseFromBoard(gData.board);
+			gData.obj.zLeft.MoveRight();
+			gData.obj.zLeft.BurnOnBoard(gData.board);
+			DrawBoard(gData);
 		}
 		break;
 
 	case OBJS::ZRight:
-		if (obj.zRight.GetCollisions(board) != COLDIR::Right)
+		if (!gData.obj.zRight.RightColliding(gData.board))
 		{
-			obj.zRight.EraseFromBoard(board);
-			obj.zRight.MoveRight();
-			obj.zRight.BurnOnBoard(board);
-			DrawBoard(board, obj, curObj, score);
+			gData.obj.zRight.EraseFromBoard(gData.board);
+			gData.obj.zRight.MoveRight();
+			gData.obj.zRight.BurnOnBoard(gData.board);
+			DrawBoard(gData);
 		}
 		break;
 
@@ -349,56 +470,115 @@ void MoveObjectRight(OBJECTS& obj, CELL board[maxX][maxY], OBJS curObj, int scor
 	}
 }
 
-void RotateObjectLeft(OBJECTS& obj, CELL board[maxX][maxY], OBJS curObj, int score)
+void RotateObjectLeft(GAMEDATA& gData)
 {
-	switch (curObj)
+	switch (gData.curObj)
 	{
 	case OBJS::None:
 		break;
 
 	case OBJS::T:
-		obj.t.EraseFromBoard(board);
-		obj.t.RotateLeft();
-		obj.t.BurnOnBoard(board);
-		DrawBoard(board, obj, curObj, score);
+		gData.obj.t.EraseFromBoard(gData.board);
+		gData.obj.t.RotateLeft();
+		gData.obj.t.BurnOnBoard(gData.board);
+		DrawBoard(gData);
 		break;
 
 	case OBJS::Square:
 		break;
 
 	case OBJS::Stick:
-		obj.stick.EraseFromBoard(board);
-		obj.stick.RotateLeft();
-		obj.stick.BurnOnBoard(board);
-		DrawBoard(board, obj, curObj, score);
+		gData.obj.stick.EraseFromBoard(gData.board);
+		gData.obj.stick.RotateLeft();
+		gData.obj.stick.BurnOnBoard(gData.board);
+		DrawBoard(gData);
 		break;
 
 	case OBJS::LLeft:
-		obj.lLeft.EraseFromBoard(board);
-		obj.lLeft.RotateLeft();
-		obj.lLeft.BurnOnBoard(board);
-		DrawBoard(board, obj, curObj, score);
+		gData.obj.lLeft.EraseFromBoard(gData.board);
+		gData.obj.lLeft.RotateLeft();
+		gData.obj.lLeft.BurnOnBoard(gData.board);
+		DrawBoard(gData);
 		break;
 
 	case OBJS::LRight:
-		obj.lRight.EraseFromBoard(board);
-		obj.lRight.RotateLeft();
-		obj.lRight.BurnOnBoard(board);
-		DrawBoard(board, obj, curObj, score);
+		gData.obj.lRight.EraseFromBoard(gData.board);
+		gData.obj.lRight.RotateLeft();
+		gData.obj.lRight.BurnOnBoard(gData.board);
+		DrawBoard(gData);
 		break;
 
 	case OBJS::ZLeft:
-		obj.zLeft.EraseFromBoard(board);
-		obj.zLeft.RotateLeft();
-		obj.zLeft.BurnOnBoard(board);
-		DrawBoard(board, obj, curObj, score);
+		gData.obj.zLeft.EraseFromBoard(gData.board);
+		gData.obj.zLeft.RotateLeft();
+		gData.obj.zLeft.BurnOnBoard(gData.board);
+		DrawBoard(gData);
 		break;
 
 	case OBJS::ZRight:
-		obj.zRight.EraseFromBoard(board);
-		obj.zRight.RotateLeft();
-		obj.zRight.BurnOnBoard(board);
-		DrawBoard(board, obj, curObj, score);
+		gData.obj.zRight.EraseFromBoard(gData.board);
+		gData.obj.zRight.RotateLeft();
+		gData.obj.zRight.BurnOnBoard(gData.board);
+		DrawBoard(gData);
+		break;
+
+	default:
+		break;
+	}
+
+	CheckOverlaps(gData);
+}
+
+void RotateObjectRight(GAMEDATA& gData)
+{
+	switch (gData.curObj)
+	{
+	case OBJS::None:
+		break;
+
+	case OBJS::T:
+		gData.obj.t.EraseFromBoard(gData.board);
+		gData.obj.t.RotateRight();
+		gData.obj.t.BurnOnBoard(gData.board);
+		DrawBoard(gData);
+		break;
+
+	case OBJS::Square:
+		break;
+
+	case OBJS::Stick:
+		gData.obj.stick.EraseFromBoard(gData.board);
+		gData.obj.stick.RotateRight();
+		gData.obj.stick.BurnOnBoard(gData.board);
+		DrawBoard(gData);
+		break;
+
+	case OBJS::LLeft:
+		gData.obj.lLeft.EraseFromBoard(gData.board);
+		gData.obj.lLeft.RotateRight();
+		gData.obj.lLeft.BurnOnBoard(gData.board);
+		DrawBoard(gData);
+		break;
+
+	case OBJS::LRight:
+		gData.obj.lRight.EraseFromBoard(gData.board);
+		gData.obj.lRight.RotateRight();
+		gData.obj.lRight.BurnOnBoard(gData.board);
+		DrawBoard(gData);
+		break;
+
+	case OBJS::ZLeft:
+		gData.obj.zLeft.EraseFromBoard(gData.board);
+		gData.obj.zLeft.RotateRight();
+		gData.obj.zLeft.BurnOnBoard(gData.board);
+		DrawBoard(gData);
+		break;
+
+	case OBJS::ZRight:
+		gData.obj.zRight.EraseFromBoard(gData.board);
+		gData.obj.zRight.RotateRight();
+		gData.obj.zRight.BurnOnBoard(gData.board);
+		DrawBoard(gData);
 		break;
 
 	default:
@@ -406,66 +586,9 @@ void RotateObjectLeft(OBJECTS& obj, CELL board[maxX][maxY], OBJS curObj, int sco
 	}
 }
 
-void RotateObjectRight(OBJECTS& obj, CELL board[maxX][maxY], OBJS curObj, int score)
+void DropDown(GAMEDATA& gData)
 {
-	switch (curObj)
-	{
-	case OBJS::None:
-		break;
-
-	case OBJS::T:
-		obj.t.EraseFromBoard(board);
-		obj.t.RotateRight();
-		obj.t.BurnOnBoard(board);
-		DrawBoard(board, obj, curObj, score);
-		break;
-
-	case OBJS::Square:
-		break;
-
-	case OBJS::Stick:
-		obj.stick.EraseFromBoard(board);
-		obj.stick.RotateRight();
-		obj.stick.BurnOnBoard(board);
-		DrawBoard(board, obj, curObj, score);
-		break;
-
-	case OBJS::LLeft:
-		obj.lLeft.EraseFromBoard(board);
-		obj.lLeft.RotateRight();
-		obj.lLeft.BurnOnBoard(board);
-		DrawBoard(board, obj, curObj, score);
-		break;
-
-	case OBJS::LRight:
-		obj.lRight.EraseFromBoard(board);
-		obj.lRight.RotateRight();
-		obj.lRight.BurnOnBoard(board);
-		DrawBoard(board, obj, curObj, score);
-		break;
-
-	case OBJS::ZLeft:
-		obj.zLeft.EraseFromBoard(board);
-		obj.zLeft.RotateRight();
-		obj.zLeft.BurnOnBoard(board);
-		DrawBoard(board, obj, curObj, score);
-		break;
-
-	case OBJS::ZRight:
-		obj.zRight.EraseFromBoard(board);
-		obj.zRight.RotateRight();
-		obj.zRight.BurnOnBoard(board);
-		DrawBoard(board, obj, curObj, score);
-		break;
-
-	default:
-		break;
-	}
-}
-
-void DropDown(OBJECTS& obj, CELL board[maxX][maxY], OBJS curObj)
-{
-	switch (curObj)
+	switch (gData.curObj)
 	{
 	case OBJS::None:
 		break;
@@ -473,10 +596,10 @@ void DropDown(OBJECTS& obj, CELL board[maxX][maxY], OBJS curObj)
 	case OBJS::T:
 		for (int i = 0; i < maxY; i++)
 		{
-			if (obj.t.GetCollisions(board) != COLDIR::Down)
+			if (!gData.obj.t.DownColliding(gData.board))
 			{
-				obj.t.EraseFromBoard(board);
-				obj.t.FallOne();
+				gData.obj.t.EraseFromBoard(gData.board);
+				gData.obj.t.FallOne();
 			}
 		}
 		break;
@@ -484,10 +607,10 @@ void DropDown(OBJECTS& obj, CELL board[maxX][maxY], OBJS curObj)
 	case OBJS::Square:
 		for (int i = 0; i < maxY; i++)
 		{
-			if (obj.square.GetCollisions(board) != COLDIR::Down)
+			if (!gData.obj.square.DownColliding(gData.board))
 			{
-				obj.square.EraseFromBoard(board);
-				obj.square.FallOne();
+				gData.obj.square.EraseFromBoard(gData.board);
+				gData.obj.square.FallOne();
 			}
 		}
 		break;
@@ -495,10 +618,10 @@ void DropDown(OBJECTS& obj, CELL board[maxX][maxY], OBJS curObj)
 	case OBJS::Stick:
 		for (int i = 0; i < maxY; i++)
 		{
-			if (obj.stick.GetCollisions(board) != COLDIR::Down)
+			if (!gData.obj.stick.DownColliding(gData.board))
 			{
-				obj.stick.EraseFromBoard(board);
-				obj.stick.FallOne();
+				gData.obj.stick.EraseFromBoard(gData.board);
+				gData.obj.stick.FallOne();
 			}
 		}
 		break;
@@ -506,10 +629,10 @@ void DropDown(OBJECTS& obj, CELL board[maxX][maxY], OBJS curObj)
 	case OBJS::LLeft:
 		for (int i = 0; i < maxY; i++)
 		{
-			if (obj.lLeft.GetCollisions(board) != COLDIR::Down)
+			if (!gData.obj.lLeft.DownColliding(gData.board))
 			{
-				obj.lLeft.EraseFromBoard(board);
-				obj.lLeft.FallOne();
+				gData.obj.lLeft.EraseFromBoard(gData.board);
+				gData.obj.lLeft.FallOne();
 			}
 		}
 		break;
@@ -517,10 +640,10 @@ void DropDown(OBJECTS& obj, CELL board[maxX][maxY], OBJS curObj)
 	case OBJS::LRight:
 		for (int i = 0; i < maxY; i++)
 		{
-			if (obj.lRight.GetCollisions(board) != COLDIR::Down)
+			if (!gData.obj.lRight.DownColliding(gData.board))
 			{
-				obj.lRight.EraseFromBoard(board);
-				obj.lRight.FallOne();
+				gData.obj.lRight.EraseFromBoard(gData.board);
+				gData.obj.lRight.FallOne();
 			}
 		}
 		break;
@@ -528,10 +651,10 @@ void DropDown(OBJECTS& obj, CELL board[maxX][maxY], OBJS curObj)
 	case OBJS::ZLeft:
 		for (int i = 0; i < maxY; i++)
 		{
-			if (obj.zLeft.GetCollisions(board) != COLDIR::Down)
+			if (!gData.obj.zLeft.DownColliding(gData.board))
 			{
-				obj.zLeft.EraseFromBoard(board);
-				obj.zLeft.FallOne();
+				gData.obj.zLeft.EraseFromBoard(gData.board);
+				gData.obj.zLeft.FallOne();
 			}
 		}
 		break;
@@ -539,10 +662,10 @@ void DropDown(OBJECTS& obj, CELL board[maxX][maxY], OBJS curObj)
 	case OBJS::ZRight:
 		for (int i = 0; i < maxY; i++)
 		{
-			if (obj.zRight.GetCollisions(board) != COLDIR::Down)
+			if (!gData.obj.zRight.DownColliding(gData.board))
 			{
-				obj.zRight.EraseFromBoard(board);
-				obj.zRight.FallOne();
+				gData.obj.zRight.EraseFromBoard(gData.board);
+				gData.obj.zRight.FallOne();
 			}
 		}
 		break;
@@ -552,39 +675,39 @@ void DropDown(OBJECTS& obj, CELL board[maxX][maxY], OBJS curObj)
 	}
 }
 
-void DrawObject(OBJECTS obj, CELL board[maxX][maxY], OBJS curObj)
+void DrawObject(GAMEDATA gData)
 {
-	switch (curObj)
+	switch (gData.curObj)
 	{
 	case OBJS::None:
 		break;
 
 	case OBJS::T:
-		obj.t.Draw();
+		gData.obj.t.Draw();
 		break;
 
 	case OBJS::Square:
-		obj.square.Draw();
+		gData.obj.square.Draw();
 		break;
 
 	case OBJS::Stick:
-		obj.stick.Draw();
+		gData.obj.stick.Draw();
 		break;
 
 	case OBJS::LLeft:
-		obj.lLeft.Draw();
+		gData.obj.lLeft.Draw();
 		break;
 
 	case OBJS::LRight:
-		obj.lRight.Draw();
+		gData.obj.lRight.Draw();
 		break;
 
 	case OBJS::ZLeft:
-		obj.zLeft.Draw();
+		gData.obj.zLeft.Draw();
 		break;
 
 	case OBJS::ZRight:
-		obj.zRight.Draw();
+		gData.obj.zRight.Draw();
 		break;
 
 	default:
@@ -592,37 +715,85 @@ void DrawObject(OBJECTS obj, CELL board[maxX][maxY], OBJS curObj)
 	}
 }
 
-KEYS GetKeys(char& inKey, char input[])
+void DrawNextObject(GAMEDATA gData)
+{
+	CUR cursor;
+
+	SetColor(WhiteOnBlack);
+	cursor.gotoxy({ boardIndent + 15 + maxX, 1 });
+	std::cout << "                             ";
+	cursor.gotoxy({ boardIndent + 15 + maxX, 2 });
+	std::cout << "                             ";
+
+	switch (gData.nextObj)
+	{
+	case OBJS::None:
+		break;
+
+	case OBJS::T:
+		gData.obj.t.DrawAsNext();
+		break;
+
+	case OBJS::Square:
+		gData.obj.square.DrawAsNext();
+		break;
+
+	case OBJS::Stick:
+		gData.obj.stick.DrawAsNext();
+		break;
+
+	case OBJS::LLeft:
+		gData.obj.lLeft.DrawAsNext();
+		break;
+
+	case OBJS::LRight:
+		gData.obj.lRight.DrawAsNext();
+		break;
+
+	case OBJS::ZLeft:
+		gData.obj.zLeft.DrawAsNext();
+		break;
+
+	case OBJS::ZRight:
+		gData.obj.zRight.DrawAsNext();
+		break;
+
+	default:
+		break;
+	}
+}
+
+KEYS GetKeys(GAMEDATA& gData, char input[])
 {
 	if (_kbhit())
 	{
-		inKey = _getch();
+		gData.inKey = _getch();
 
-		if (inKey == input[(int)KEYS::Up])
+		if (gData.inKey == input[(int)KEYS::Up])
 		{
 			return KEYS::Up;
 		}
-		else if (inKey == input[(int)KEYS::Left])
+		else if (gData.inKey == input[(int)KEYS::Left])
 		{
 			return KEYS::Left;
 		}
-		else if (inKey == input[(int)KEYS::Right])
+		else if (gData.inKey == input[(int)KEYS::Right])
 		{
 			return KEYS::Right;
 		}
-		else if (inKey == input[(int)KEYS::Down])
+		else if (gData.inKey == input[(int)KEYS::Down])
 		{
 			return KEYS::Down;
 		}
-		else if (inKey == input[(int)KEYS::RotateL])
+		else if (gData.inKey == input[(int)KEYS::RotateL])
 		{
 			return KEYS::RotateL;
 		}
-		else if (inKey == input[(int)KEYS::RotateR])
+		else if (gData.inKey == input[(int)KEYS::RotateR])
 		{
 			return KEYS::RotateR;
 		}
-		else if (inKey == input[(int)KEYS::DropDown])
+		else if (gData.inKey == input[(int)KEYS::DropDown])
 		{
 			return KEYS::DropDown;
 		}
@@ -631,9 +802,9 @@ KEYS GetKeys(char& inKey, char input[])
 	return KEYS::None;
 }
 
-void ExecuteInput(char& inKey, char input[], OBJECTS& obj, CELL board[maxX][maxY], OBJS curObj, int score)
+void ExecuteInput(GAMEDATA& gData, char input[])
 {
-	KEYS action = GetKeys(inKey, input);
+	KEYS action = GetKeys(gData, input);
 
 	switch (action)
 	{
@@ -641,14 +812,14 @@ void ExecuteInput(char& inKey, char input[], OBJECTS& obj, CELL board[maxX][maxY
 		break;
 
 	case KEYS::Left:
-		MoveObjectLeft(obj, board, curObj, score);
+		MoveObjectLeft(gData);
 		break;
 
 	case KEYS::Down:
 		break;
 
 	case KEYS::Right:
-		MoveObjectRight(obj, board, curObj, score);
+		MoveObjectRight(gData);
 		break;
 
 	case KEYS::Enter:
@@ -658,15 +829,15 @@ void ExecuteInput(char& inKey, char input[], OBJECTS& obj, CELL board[maxX][maxY
 		break;
 
 	case KEYS::RotateL:
-		RotateObjectLeft(obj, board, curObj, score);
+		RotateObjectLeft(gData);
 		break;
 
 	case KEYS::RotateR:
-		RotateObjectRight(obj, board, curObj, score);
+		RotateObjectRight(gData);
 		break;
 
 	case KEYS::DropDown:
-		DropDown(obj, board, curObj);
+		DropDown(gData);
 		break;
 
 	case KEYS::None:
@@ -677,66 +848,77 @@ void ExecuteInput(char& inKey, char input[], OBJECTS& obj, CELL board[maxX][maxY
 	}
 }
 
-void CheckChangeObject(OBJECTS& obj, OBJS& curObj, CELL board[maxX][maxY])
+void CheckChangeObject(GAMEDATA& gData)
 {
-	switch (curObj)
+	int extraTime = clock() - gData.collisionTime;
+
+	switch (gData.curObj)
 	{
 	case OBJS::None:
 		break;
 
 	case OBJS::T:
-		if (!obj.t.current)
+		if (!gData.obj.t.current)
 		{
-			curObj = (OBJS)(rand() % objQty + 1);
-			PlaceObjects(obj, curObj);
+			gData.collided = false;
+
+			gData.curObj = gData.nextObj;
+			gData.nextObj = (OBJS)(rand() % objQty + 1);
+			PlaceObjects(gData);
 		}
 		break;
 
 	case OBJS::Square:
-		if (!obj.square.current)
+		if (!gData.obj.square.current)
 		{
-			curObj = (OBJS)(rand() % objQty + 1);
-			PlaceObjects(obj, curObj);
+			gData.curObj = gData.nextObj;
+			gData.nextObj = (OBJS)(rand() % objQty + 1);
+			PlaceObjects(gData);
 		}
 		break;
 
 	case OBJS::Stick:
-		if (!obj.stick.current)
+		if (!gData.obj.stick.current)
 		{
-			curObj = (OBJS)(rand() % objQty + 1);
-			PlaceObjects(obj, curObj);
+			gData.curObj = gData.nextObj;
+			gData.nextObj = (OBJS)(rand() % objQty + 1);
+			PlaceObjects(gData);
 		}
 		break;
 
 	case OBJS::LLeft:
-		if (!obj.lLeft.current)
+		if (!gData.obj.lLeft.current)
 		{
-			curObj = (OBJS)(rand() % objQty + 1);
-			PlaceObjects(obj, curObj);
+			gData.curObj = gData.nextObj;
+			gData.nextObj = (OBJS)(rand() % objQty + 1);
+			PlaceObjects(gData);
 		}
 		break;
 
 	case OBJS::LRight:
-		if (!obj.lRight.current)
+		if (!gData.obj.lRight.current)
 		{
-			curObj = (OBJS)(rand() % objQty + 1);
-			PlaceObjects(obj, curObj);
+			gData.curObj = gData.nextObj;
+			gData.nextObj = (OBJS)(rand() % objQty + 1);
+			PlaceObjects(gData);
 		}
 		break;
 
 	case OBJS::ZLeft:
-		if (!obj.zLeft.current)
+		if (!gData.obj.zLeft.current)
 		{
-			curObj = (OBJS)(rand() % objQty + 1);
-			PlaceObjects(obj, curObj);
+			gData.curObj = gData.nextObj;
+			gData.nextObj = (OBJS)(rand() % objQty + 1);
+			PlaceObjects(gData);
 		}
 		break;
 
 	case OBJS::ZRight:
-		if (!obj.zRight.current)
+		if (!gData.obj.zRight.current)
 		{
-			curObj = (OBJS)(rand() % objQty + 1);
-			PlaceObjects(obj, curObj);
+			gData.curObj = gData.nextObj;
+			gData.nextObj = (OBJS)(rand() % objQty + 1);
+			PlaceObjects(gData);
 		}
 		break;
 
@@ -745,7 +927,7 @@ void CheckChangeObject(OBJECTS& obj, OBJS& curObj, CELL board[maxX][maxY])
 	}
 }
 
-void DrawBoard(CELL board[maxX][maxY], OBJECTS obj, OBJS curObj, int score)
+void DrawBoard(GAMEDATA gData)
 {
 	WALLS wall;
 	CUR cursor;
@@ -755,28 +937,34 @@ void DrawBoard(CELL board[maxX][maxY], OBJECTS obj, OBJS curObj, int score)
 
 	for (int y = 0; y < maxY; y++)
 	{
-		for (int i = 0; i < boardIndent; i++)
-		{
-			std::cout << " ";
-		}
-
-		std::cout << wall.ver;
-		for (int x = 0; x < maxX; x++)
-		{
-			SetColor(board[x][y].color);
-
-			if (board[x][y].state == CELLSTATE::Empty)
-				std::cout << "  ";
-			else
-				std::cout << sqr << sqr;
-
-			SetColor(defColor);
-		}
-		std::cout << wall.ver << std::endl;
+		cursor.gotoxy({ boardIndent, y });
+		DrawLine(gData, y);
 	}
 
 	DrawLastLine(maxX);
-	DrawObject(obj, board, curObj);
+	DrawObject(gData);
+	DrawNextObject(gData);
+}
+
+void DrawLine(GAMEDATA gData, int line)
+{
+	WALLS wall;
+	CUR cursor;
+
+	cursor.gotoxy({ boardIndent, line + 1 });
+	std::cout << wall.ver;
+	for (int x = 0; x < maxX; x++)
+	{
+		SetColor(gData.board[x][line].color);
+
+		if (gData.board[x][line].state == CELLSTATE::Empty)
+			std::cout << "  ";
+		else
+			std::cout << sqr << sqr;
+
+		SetColor(defColor);
+	}
+	std::cout << wall.ver << std::endl;
 }
 
 void DrawFirstLine(int size)
@@ -829,39 +1017,39 @@ void ResetBoard(CELL board[maxX][maxY])
 	}
 }
 
-void PlaceObjects(OBJECTS& obj, OBJS curObj)
+void PlaceObjects(GAMEDATA& gData)
 {
-	switch (curObj)
+	switch (gData.curObj)
 	{
 	case OBJS::None:
 		break;
 
 	case OBJS::T:
-		obj.t.Place();
+		gData.obj.t.Place();
 		break;
 
 	case OBJS::Square:
-		obj.square.Place();
+		gData.obj.square.Place();
 		break;
 
 	case OBJS::Stick:
-		obj.stick.Place();
+		gData.obj.stick.Place();
 		break;
 
 	case OBJS::LLeft:
-		obj.lLeft.Place();
+		gData.obj.lLeft.Place();
 		break;
 
 	case OBJS::LRight:
-		obj.lRight.Place();
+		gData.obj.lRight.Place();
 		break;
 
 	case OBJS::ZLeft:
-		obj.zLeft.Place();
+		gData.obj.zLeft.Place();
 		break;
 
 	case OBJS::ZRight:
-		obj.zRight.Place();
+		gData.obj.zRight.Place();
 		break;
 
 	default:
@@ -869,12 +1057,50 @@ void PlaceObjects(OBJECTS& obj, OBJS curObj)
 	}
 }
 
-void SetNewSpeed(int& frameUpdate)
+void SetNewSpeed(GAMEDATA& gData, TIME gTime)
 {
-	int speedUpdateTime = 20000;
+	int speedUpTime = 10;
 
-	if (frameUpdate > 200 && clock() % speedUpdateTime == 0)
-		frameUpdate /= 2;
+	gData.frameRate = gTime.secsElapsed / speedUpTime + 1;
+}
+
+void CheckOverlaps(GAMEDATA& gData)
+{
+	switch (gData.curObj)
+	{
+	case OBJS::None:
+		break;
+
+	case OBJS::T:
+		gData.obj.t.CheckOverlapedCell(gData.board);
+		break;
+
+	case OBJS::Square:
+		break;
+
+	case OBJS::Stick:
+		gData.obj.stick.CheckOverlapedCell(gData.board);
+		break;
+
+	case OBJS::LLeft:
+		gData.obj.lLeft.CheckOverlapedCell(gData.board);
+		break;
+
+	case OBJS::LRight:
+		gData.obj.lRight.CheckOverlapedCell(gData.board);
+		break;
+
+	case OBJS::ZLeft:
+		gData.obj.zLeft.CheckOverlapedCell(gData.board);
+		break;
+
+	case OBJS::ZRight:
+		gData.obj.zRight.CheckOverlapedCell(gData.board);
+		break;
+
+	default:
+		break;
+	}
 }
 
 void DrawScore(int score)

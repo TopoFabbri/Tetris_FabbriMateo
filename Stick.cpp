@@ -80,26 +80,45 @@ void Stick::Kick()
 	}
 }
 
-COLDIR Stick::GetCollisions(CELL board[maxX][maxY])
+void Stick::CheckOverlapedCell(CELL board[maxX][maxY])
+{
+	if (board[left.x][left.y].state == CELLSTATE::Static
+		|| board[right.x][right.y].state == CELLSTATE::Static
+		|| board[centerRight.x][centerRight.y].state == CELLSTATE::Static)
+	{
+		MoveUp();
+	}
+}
+
+bool Stick::DownColliding(CELL board[maxX][maxY])
 {
 	if (DownCollideCell(board, centerLeft) || DownCollideCell(board, left)
 		|| DownCollideCell(board, right) || DownCollideCell(board, centerRight))
 	{
 		QuitFalling(board);
-		return COLDIR::Down;
+		return true;
 	}
-	else if (LeftCollideCell(board, centerLeft) || LeftCollideCell(board, left)
+	return false;
+}
+
+bool Stick::LeftColliding(CELL board[maxX][maxY])
+{
+	if (LeftCollideCell(board, centerLeft) || LeftCollideCell(board, left)
 		|| LeftCollideCell(board, right) || LeftCollideCell(board, centerRight))
 	{
-		return COLDIR::Left;
+		return true;
 	}
-	else if (RightCollideCell(board, centerLeft) || RightCollideCell(board, left)
+	return false;
+}
+
+bool Stick::RightColliding(CELL board[maxX][maxY])
+{
+	if (RightCollideCell(board, centerLeft) || RightCollideCell(board, left)
 		|| RightCollideCell(board, right) || RightCollideCell(board, centerRight))
 	{
-		return COLDIR::Right;
+		return true;
 	}
-
-	return COLDIR::None;
+	return false;
 }
 
 void Stick::Draw()
@@ -118,6 +137,30 @@ void Stick::Draw()
 	std::cout << sqr << sqr;
 
 	cursor.gotoxy(ConLoc(centerRight));
+	std::cout << sqr << sqr;
+
+	SetColor(defColor);
+	cursor.gotoxy(txtPos);
+}
+
+void Stick::DrawAsNext()
+{
+	COORDS pivotPos = { boardIndent + 20 + maxX, 1 };
+	CUR cursor;
+	int cont = 2;
+
+	SetColor(color);
+
+	cursor.gotoxy(pivotPos);
+	std::cout << sqr << sqr;
+
+	cursor.gotoxy({ pivotPos.x - cont, pivotPos.y });
+	std::cout << sqr << sqr;
+
+	cursor.gotoxy({ pivotPos.x + cont * 2, pivotPos.y });
+	std::cout << sqr << sqr;
+
+	cursor.gotoxy({ pivotPos.x + cont, pivotPos.y });
 	std::cout << sqr << sqr;
 
 	SetColor(defColor);
@@ -160,6 +203,14 @@ void Stick::FallOne()
 	left.y++;
 	right.y++;
 	centerRight.y++;
+}
+
+void Stick::MoveUp()
+{
+	centerLeft.y--;
+	left.y--;
+	right.y--;
+	centerRight.y--;
 }
 
 void Stick::MoveRight()

@@ -31,6 +31,10 @@ void Menu()
 			Nav = MENUOPS::Menu;
 			break;
 
+		case MENUOPS::Settings:
+			Nav = MENUOPS::Menu;
+			break;
+
 		case MENUOPS::Menu:
 			system("cls");
 			PrintTitle("MENU");

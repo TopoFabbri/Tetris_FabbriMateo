@@ -8,8 +8,8 @@ const int maxButtons = 10;
 const int maxX = 10;
 const int maxY = 24;
 const int boardIndent = 60;
-const char sqr = 177;
-const int defFrameUpdate = 1000;
+const char sqr = 177;// 32
+const int defFrameUpdate = 1;
 
 enum class ROT
 {
@@ -60,12 +60,13 @@ enum COLORS
 	WhiteOnBlack = 15,
 	BlackOnBlue = 16,
 	BlackOnGreen = 32,
-	BlackOnCyan = 48,
+	BlackOnLightBlue = 48,
 	BlackOnRed = 64,
 	BlackOnPurple = 80,
 	WhiteOnPurple = 87,
 	BlackOnYellow = 96,
 	BlackOnGray = 128,
+	BlackOnCyan = 176,
 	BlackOnOrange = 192,
 	BlackOnWhite = 240,
 	BlueOnWhite = 241,

@@ -1,5 +1,6 @@
 #include <iostream>
 #include <Windows.h>
+#include <time.h>
 #include "Menu.h"
 
 void RunProgram();
