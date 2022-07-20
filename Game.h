@@ -62,7 +62,7 @@ struct GAMEDATA
 
 KEYS GetKeys(GAMEDATA& gData, char input[]);
 bool CheckLines(GAMEDATA& gData);
-bool ShouldDropFrame(TIME& gTime, GAMEDATA gData);
+bool ShouldDropFrame(TIME& gTime, GAMEDATA& gData);
 void FrameUpdate(GAMEDATA& gData);
 void ExecuteInput(GAMEDATA& gData, char input[]);
 void DestroyLine(GAMEDATA& gData, int line);
@@ -86,3 +86,4 @@ void SetNewSpeed(GAMEDATA& gData, TIME gTime);
 void CheckOverlaps(GAMEDATA& gData);
 void DrawScore(int score);
 void DrawNextObject(GAMEDATA gData);
+void DrawFrames(GAMEDATA gData);

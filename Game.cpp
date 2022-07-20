@@ -15,7 +15,8 @@ void Play(char input[])
 	{
 		if (ShouldDropFrame(gTime, gData))
 			FrameUpdate(gData);
-
+		
+		DrawFrames(gData);
 		ExecuteInput(gData, input);
 		CheckChangeObject(gData);
 		SetNewSpeed(gData, gTime);
@@ -24,7 +25,7 @@ void Play(char input[])
 	} while (gData.inKey != input[(int)KEYS::Back] && !gData.lost);
 }
 
-bool ShouldDropFrame(TIME& gTime, GAMEDATA gData)
+bool ShouldDropFrame(TIME& gTime, GAMEDATA& gData)
 {
 	gTime.elapsed = clock() - gTime.init;
 	gTime.secsElapsed = gTime.elapsed / 1000;
@@ -36,9 +37,11 @@ bool ShouldDropFrame(TIME& gTime, GAMEDATA gData)
 	}
 
 	int fraction = 1000 / gData.frameRate;
-	int fractionReached = gTime.elapsed - gTime.secsElapsed * 1000;
+	int fractionReached = (gTime.elapsed - gTime.secsElapsed * 1000) / fraction;
 
-	bool callFrame = (gData.frame < gData.frameRate);
+	fractionReached = (fractionReached < 1 ? 1 : fractionReached);
+
+	bool callFrame = (fractionReached > gData.frame);//(gData.frame < gData.frameRate);
 	return callFrame;
 }
 
@@ -1061,7 +1064,8 @@ void SetNewSpeed(GAMEDATA& gData, TIME gTime)
 {
 	int speedUpTime = 10;
 
-	gData.frameRate = gTime.secsElapsed / speedUpTime + 1;
+	if (gData.frameRate < 10)
+		gData.frameRate = gTime.secsElapsed / speedUpTime + 1;
 }
 
 void CheckOverlaps(GAMEDATA& gData)
@@ -1112,4 +1116,12 @@ void DrawScore(int score)
 	std::cout << "Score: " << score << "    ";
 
 	cursor.gotoxy(txtPos);
+}
+
+void DrawFrames(GAMEDATA gData)
+{
+	CUR cursor;
+
+	cursor.gotoxy({ 0, 0 });
+	printf("Speed: %d", gData.frameRate);
 }
