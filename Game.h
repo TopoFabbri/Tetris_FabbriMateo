@@ -89,3 +89,4 @@ void CheckOverlaps(GAMEDATA& gData);
 void DrawScore(int score);
 void DrawNextObject(GAMEDATA gData);
 void DrawFrames(GAMEDATA gData);
+void DrawOnMap(std::string text, int score);

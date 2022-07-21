@@ -18,12 +18,15 @@ void Play(char input[])
 			FrameUpdate(gData);
 		
 		DrawFrames(gData);
+		DrawBoard(gData);
 		ExecuteInput(gData, input);
 		CheckChangeObject(gData);
 		SetNewSpeed(gData, gTime);
 		gData.lost = CheckLines(gData);
 
 	} while (gData.inKey != input[(int)KEYS::Back] && !gData.lost);
+
+	DrawOnMap("          You lose!", gData.score);
 }
 
 bool ShouldDropFrame(TIME& gTime, GAMEDATA& gData)
@@ -49,7 +52,6 @@ bool ShouldDropFrame(TIME& gTime, GAMEDATA& gData)
 void FrameUpdate(GAMEDATA& gData)
 {
 	gData.frame++;
-	DrawBoard(gData);
 	FallObject(gData);
 }
 
@@ -112,7 +114,9 @@ bool CheckLines(GAMEDATA& gData)
 	for (int x = 0; x < maxX; x++)
 	{
 		if (gData.board[x][0].state == CELLSTATE::Static)
+		{
 			return true;
+		}
 	}
 
 	return false;
@@ -677,6 +681,8 @@ void DropDown(GAMEDATA& gData)
 	default:
 		break;
 	}
+
+	DrawBoard(gData);
 }
 
 void DrawObject(GAMEDATA gData)
@@ -820,6 +826,8 @@ void ExecuteInput(GAMEDATA& gData, char input[])
 		break;
 
 	case KEYS::Down:
+		FallObject(gData);
+		DrawBoard(gData);
 		break;
 
 	case KEYS::Right:
@@ -947,7 +955,6 @@ void DrawBoard(GAMEDATA gData)
 
 	DrawLastLine(maxX);
 	DrawObject(gData);
-	DrawNextObject(gData);
 }
 
 void DrawControls(char input[])
@@ -981,6 +988,9 @@ void DrawControls(char input[])
 	loc.y++;
 
 	DrawKeys(loc.y, "Drop Down", input[(int)KEYS::DropDown]);
+	DrawKeys(loc.y, "Hard Drop", input[(int)KEYS::Down]);
+
+	SetColor(defColor);
 }
 
 void DrawKeys(int& line, std::string txt, char key)
@@ -1017,13 +1027,10 @@ void DrawLine(GAMEDATA gData, int line)
 
 void DrawFirstLine(int size)
 {
+	CUR cursor;
 	WALLS wall;
 
-	for (int i = 0; i < boardIndent; i++)
-	{
-		std::cout << " ";
-	}
-
+	cursor.gotoxy({ boardIndent, 0 });
 	std::cout << wall.upLeftC;
 
 	for (int i = 0; i < size; i++)
@@ -1036,13 +1043,10 @@ void DrawFirstLine(int size)
 
 void DrawLastLine(int size)
 {
+	CUR cursor;
 	WALLS wall;
 
-	for (int i = 0; i < boardIndent; i++)
-	{
-		std::cout << " ";
-	}
-
+	cursor.gotoxy({ boardIndent, maxY + 1 });
 	std::cout << wall.lowLeftC;
 
 	for (int i = 0; i < size; i++)
@@ -1103,6 +1107,8 @@ void PlaceObjects(GAMEDATA& gData)
 	default:
 		break;
 	}
+
+	DrawNextObject(gData);
 }
 
 void SetNewSpeed(GAMEDATA& gData, TIME gTime)
@@ -1172,4 +1178,127 @@ void DrawFrames(GAMEDATA gData)
 
 	std::cout << "SPEED: " << gData.frameRate;
 	SetColor(defColor);
+}
+
+void DrawOnMap(std::string text, int score)
+{
+	CUR curPos;
+	short startPopupPosY = 10;
+	const short startPopupPosX = 54;
+	const short contiguos = 1;
+	const int lineLength = 29;
+	const short textStart = 4;
+	const short textLength = 28;
+	const int lineQty = 4;
+
+	WALLS wall;					 // Cell Walls 
+
+	curPos.gotoxy({ startPopupPosX, startPopupPosY });
+
+	SetColor(WhiteOnPurple);
+	std::cout << " " << wall.upLeftC;
+	for (int i = 0; i < lineLength; i++)
+	{
+		std::cout << wall.hor;
+	}
+	std::cout << wall.upRightC << " ";
+
+	int finishLine[3] = { -1, -1, -1 };
+
+	char line[lineQty][lineLength];
+
+	for (int j = 0; j < lineQty; j++)
+	{
+		for (int i = 0; i < lineLength; i++)
+		{
+			line[j][i] = ' ';
+		}
+	}
+
+	for (int i = lineLength; i >= 0; i--)
+	{
+		if (i <= text.length())
+		{
+			if (text[i] == ' ')
+			{
+				finishLine[0] = i;
+				break;
+			}
+		}
+	}
+
+	for (int i = lineLength + finishLine[0] - 1; i >= finishLine[0]; i--)
+	{
+		if (i <= text.length())
+		{
+			if (text[i] == ' ')
+			{
+				finishLine[1] = i;
+				break;
+			}
+		}
+	}
+
+	for (int i = lineLength + finishLine[1] - 1; i >= finishLine[1]; i--)
+	{
+		if (i <= text.length())
+		{
+			if (text[i] == ' ')
+			{
+				finishLine[2] = i;
+				break;
+			}
+		}
+	}
+
+	for (int i = 0; i < text.length(); i++)
+	{
+		if (i > finishLine[2] && text.length() > finishLine[1] + lineLength)
+		{
+			line[3][i - finishLine[2] - 1] = text[i];
+		}
+		else if (i > finishLine[1] && text.length() > finishLine[0] + lineLength)
+		{
+			line[2][i - finishLine[1] - 1] = text[i];
+		}
+		else if (i > finishLine[0] && text.length() > lineLength)
+		{
+			line[1][i - finishLine[0] - 1] = text[i];
+		}
+		else
+		{
+			line[0][i] = text[i];
+		}
+	}
+
+	for (int i = 0; i < lineQty; i++)
+	{
+		curPos.gotoxy({ startPopupPosX, (startPopupPosY + i + contiguos) });
+		std::cout << " " << wall.ver;
+		SetColor(BlackOnPurple);
+		for (int pos = 0; pos < lineLength; pos++)
+		{
+			std::cout << line[i][pos];
+		}
+		SetColor(WhiteOnPurple);
+		std::cout << wall.ver << " ";
+	}
+	curPos.gotoxy({ startPopupPosX + contiguos * 2, (startPopupPosY + 3 + contiguos) });
+	SetColor(BlackOnPurple);
+	std::cout << "         Score: " << score;
+	SetColor(WhiteOnPurple);
+	
+
+	curPos.gotoxy({ startPopupPosX, (startPopupPosY + lineQty + contiguos) });
+
+	std::cout << " " << wall.lowLeftC;
+	for (int i = 0; i < lineLength; i++)
+	{
+		std::cout << wall.hor;
+	}
+	std::cout << wall.lowRightC << " ";
+
+	SetColor(WhiteOnBlack);
+	curPos.gotoxy(txtPos);
+	system("pause");
 }
