@@ -10,10 +10,28 @@ void MenuNavigator(const int opsQty, char text[10][10], char input[], int& optio
 
 	do
 	{
+		COORDS controlsPos{ 2, 22 };
 		for (int ops = 0; ops < opsQty; ops++)
 		{
 			PrintOptions(text, ops, cursor);
 		}
+
+		SetColor(WhiteOnBlack);
+
+		conCursor.gotoxy(controlsPos);
+		std::cout << input[(int)KEYS::Left] << ": Move Left";
+		controlsPos.y++;
+
+		conCursor.gotoxy(controlsPos);
+		std::cout << input[(int)KEYS::Right] << ": Move Right";
+		controlsPos.y++;
+
+		conCursor.gotoxy(controlsPos);
+		std::cout << input[(int)KEYS::Enter] << ": Select";
+		controlsPos.y += 2;
+
+		conCursor.gotoxy(controlsPos);
+		std::cout << input[(int)KEYS::Back] << ": Back";
 
 		saveIn = GetMenuInput(cursor, input, opsQty);
 		chose = (saveIn != 0);
@@ -73,7 +91,9 @@ void PrintOptions(char displayText[10][10], int ops, int cursor)
 	int line[3] = { 5, 6, 7 };
 
 	if (ops == cursor)
-		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), GrayOnBlack);
+		SetColor(PurpleOnBlack);
+	else
+		SetColor(BlackOnBlack);
 
 	COORD curPos = { boxLength * ops, (short)line[0] };
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), curPos);

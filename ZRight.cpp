@@ -80,14 +80,11 @@ void ZRight::Kick()
 	}
 }
 
-void ZRight::CheckOverlapedCell(CELL board[maxX][maxY])
+bool ZRight::CheckOverlapedCell(CELL board[maxX][maxY])
 {
-	if (board[downLeft.x][downLeft.y].state == CELLSTATE::Static
+	return (board[downLeft.x][downLeft.y].state == CELLSTATE::Static
 		|| board[right.x][right.y].state == CELLSTATE::Static
-		|| board[down.x][down.y].state == CELLSTATE::Static)
-	{
-		MoveUp();
-	}
+		|| board[down.x][down.y].state == CELLSTATE::Static);
 }
 
 bool ZRight::DownColliding(CELL board[maxX][maxY])

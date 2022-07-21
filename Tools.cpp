@@ -9,15 +9,15 @@ void hidecursor()
     SetConsoleCursorInfo(consoleHandle, &info);
 }
 
-void SetFontSize(int size)
+void SetFontSize(int sizeX, int sizeY)
 {
     static CONSOLE_FONT_INFOEX  fontex;
     fontex.cbSize = sizeof(CONSOLE_FONT_INFOEX);
     HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
     GetCurrentConsoleFontEx(hOut, 0, &fontex);
     fontex.FontWeight = 500;
-    fontex.dwFontSize.X = size;
-    fontex.dwFontSize.Y = size;
+    fontex.dwFontSize.X = sizeX;
+    fontex.dwFontSize.Y = sizeY;
     SetCurrentConsoleFontEx(hOut, NULL, &fontex);
 }
 

@@ -10,6 +10,9 @@
 #include "ZRight.h"
 #include <conio.h>
 #include <time.h>
+#include <iostream>
+#include <string>
+#include <sstream>
 
 const int objQty = 7;
 const int timeBomb = 2000;
@@ -86,7 +89,9 @@ void Play(char input[]);
 void PlaceObjects(GAMEDATA& gData);
 void SetNewSpeed(GAMEDATA& gData, TIME gTime);
 void CheckOverlaps(GAMEDATA& gData);
+void FramesOnTitle(int frames);
 void DrawScore(int score);
+void DrawTime(int time);
 void DrawNextObject(GAMEDATA gData);
-void DrawFrames(GAMEDATA gData);
-void DrawOnMap(std::string text, int score);
+void DrawLevel(GAMEDATA gData);
+void DrawOnBoard(std::string text, int score);

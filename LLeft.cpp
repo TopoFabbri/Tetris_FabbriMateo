@@ -80,14 +80,11 @@ void LLeft::Kick()
 	}
 }
 
-void LLeft::CheckOverlapedCell(CELL board[maxX][maxY])
+bool LLeft::CheckOverlapedCell(CELL board[maxX][maxY])
 {
-	if (board[left.x][left.y].state == CELLSTATE::Static
+	return (board[left.x][left.y].state == CELLSTATE::Static
 		|| board[corner.x][corner.y].state == CELLSTATE::Static
-		|| board[down.x][down.y].state == CELLSTATE::Static)
-	{
-		MoveUp();
-	}
+		|| board[down.x][down.y].state == CELLSTATE::Static);
 }
 
 bool LLeft::DownColliding(CELL board[maxX][maxY])

@@ -78,16 +78,22 @@ void Stick::Kick()
 	{
 		MoveRight();
 	}
+
+	if (left.x >= maxX - 1 || right.x >= maxX - 1 || centerRight.x >= maxX - 1)
+	{
+		MoveLeft();
+	}
+	else if (left.x <= 0 || right.x <= 0 || centerRight.x <= 0)
+	{
+		MoveRight();
+	}
 }
 
-void Stick::CheckOverlapedCell(CELL board[maxX][maxY])
+bool Stick::CheckOverlapedCell(CELL board[maxX][maxY])
 {
-	if (board[left.x][left.y].state == CELLSTATE::Static
+	return (board[left.x][left.y].state == CELLSTATE::Static
 		|| board[right.x][right.y].state == CELLSTATE::Static
-		|| board[centerRight.x][centerRight.y].state == CELLSTATE::Static)
-	{
-		MoveUp();
-	}
+		|| board[centerRight.x][centerRight.y].state == CELLSTATE::Static);
 }
 
 bool Stick::DownColliding(CELL board[maxX][maxY])

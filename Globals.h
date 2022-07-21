@@ -49,6 +49,7 @@ enum class KEYS
 
 enum COLORS
 {
+	BlackOnBlack = 0,
 	BlueOnBlack = 9,
 	GreenOnBlack = 2,
 	RedOnBlack = 4,
@@ -133,4 +134,4 @@ const COORDS pos0{ 0, 0 };
 COORDS ConLoc(COORDS boardLoc);
 void SetColor(COLORS color);
 void hidecursor();
-void SetFontSize(int size);
+void SetFontSize(int sizeX, int sizeY);

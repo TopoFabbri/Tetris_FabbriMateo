@@ -30,7 +30,7 @@ public:
 	bool DownColliding(CELL board[maxX][maxY]);
 	bool LeftColliding(CELL board[maxX][maxY]);
 	bool RightColliding(CELL board[maxX][maxY]);
-	void CheckOverlapedCell(CELL board[maxX][maxY]);
+	bool CheckOverlapedCell(CELL board[maxX][maxY]);
 	void Draw();
 	void DrawAsNext();
 	void Place();

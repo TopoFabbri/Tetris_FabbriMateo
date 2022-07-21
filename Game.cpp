@@ -16,17 +16,31 @@ void Play(char input[])
 	{
 		if (ShouldDropFrame(gTime, gData))
 			FrameUpdate(gData);
-		
-		DrawFrames(gData);
+
+		DrawLevel(gData);
 		DrawBoard(gData);
 		ExecuteInput(gData, input);
 		CheckChangeObject(gData);
 		SetNewSpeed(gData, gTime);
 		gData.lost = CheckLines(gData);
 
+
 	} while (gData.inKey != input[(int)KEYS::Back] && !gData.lost);
 
-	DrawOnMap("          You lose!", gData.score);
+	DrawOnBoard("          You lose!", gData.score);
+}
+
+void FramesOnTitle(int frames)
+{
+	std::string tmp = "Tetris Frames: ";
+	std::ostringstream str1;
+	str1 << frames;
+
+	tmp.append(str1.str());
+	std::wstring tmp1 = std::wstring(tmp.begin(), tmp.end());
+
+	LPCWSTR title = tmp1.c_str();
+	SetConsoleTitleW(title);
 }
 
 bool ShouldDropFrame(TIME& gTime, GAMEDATA& gData)
@@ -52,6 +66,7 @@ bool ShouldDropFrame(TIME& gTime, GAMEDATA& gData)
 void FrameUpdate(GAMEDATA& gData)
 {
 	gData.frame++;
+	FramesOnTitle(gData.frame);
 	FallObject(gData);
 }
 
@@ -124,7 +139,7 @@ bool CheckLines(GAMEDATA& gData)
 
 void DestroyLine(GAMEDATA& gData, int line)
 {
-	DrawBoard(gData);
+
 	for (int x = 0; x < maxX; x++)
 	{
 		gData.board[x][line].color = GetOpposite(gData.board[x][line].color);
@@ -327,7 +342,7 @@ void MoveObjectLeft(GAMEDATA& gData)
 			gData.obj.t.EraseFromBoard(gData.board);
 			gData.obj.t.MoveLeft();
 			gData.obj.t.BurnOnBoard(gData.board);
-			DrawBoard(gData);
+
 		}
 		break;
 
@@ -337,7 +352,7 @@ void MoveObjectLeft(GAMEDATA& gData)
 			gData.obj.square.EraseFromBoard(gData.board);
 			gData.obj.square.MoveLeft();
 			gData.obj.square.BurnOnBoard(gData.board);
-			DrawBoard(gData);
+
 		}
 		break;
 
@@ -347,7 +362,7 @@ void MoveObjectLeft(GAMEDATA& gData)
 			gData.obj.stick.EraseFromBoard(gData.board);
 			gData.obj.stick.MoveLeft();
 			gData.obj.stick.BurnOnBoard(gData.board);
-			DrawBoard(gData);
+
 		}
 		break;
 
@@ -357,7 +372,7 @@ void MoveObjectLeft(GAMEDATA& gData)
 			gData.obj.lLeft.EraseFromBoard(gData.board);
 			gData.obj.lLeft.MoveLeft();
 			gData.obj.lLeft.BurnOnBoard(gData.board);
-			DrawBoard(gData);
+
 		}
 		break;
 
@@ -367,7 +382,7 @@ void MoveObjectLeft(GAMEDATA& gData)
 			gData.obj.lRight.EraseFromBoard(gData.board);
 			gData.obj.lRight.MoveLeft();
 			gData.obj.lRight.BurnOnBoard(gData.board);
-			DrawBoard(gData);
+
 		}
 		break;
 
@@ -377,7 +392,7 @@ void MoveObjectLeft(GAMEDATA& gData)
 			gData.obj.zLeft.EraseFromBoard(gData.board);
 			gData.obj.zLeft.MoveLeft();
 			gData.obj.zLeft.BurnOnBoard(gData.board);
-			DrawBoard(gData);
+
 		}
 		break;
 
@@ -387,7 +402,7 @@ void MoveObjectLeft(GAMEDATA& gData)
 			gData.obj.zRight.EraseFromBoard(gData.board);
 			gData.obj.zRight.MoveLeft();
 			gData.obj.zRight.BurnOnBoard(gData.board);
-			DrawBoard(gData);
+
 		}
 		break;
 
@@ -409,7 +424,7 @@ void MoveObjectRight(GAMEDATA& gData)
 			gData.obj.t.EraseFromBoard(gData.board);
 			gData.obj.t.MoveRight();
 			gData.obj.t.BurnOnBoard(gData.board);
-			DrawBoard(gData);
+
 		}
 		break;
 
@@ -419,7 +434,7 @@ void MoveObjectRight(GAMEDATA& gData)
 			gData.obj.square.EraseFromBoard(gData.board);
 			gData.obj.square.MoveRight();
 			gData.obj.square.BurnOnBoard(gData.board);
-			DrawBoard(gData);
+
 		}
 		break;
 
@@ -429,7 +444,7 @@ void MoveObjectRight(GAMEDATA& gData)
 			gData.obj.stick.EraseFromBoard(gData.board);
 			gData.obj.stick.MoveRight();
 			gData.obj.stick.BurnOnBoard(gData.board);
-			DrawBoard(gData);
+
 		}
 		break;
 
@@ -439,7 +454,7 @@ void MoveObjectRight(GAMEDATA& gData)
 			gData.obj.lLeft.EraseFromBoard(gData.board);
 			gData.obj.lLeft.MoveRight();
 			gData.obj.lLeft.BurnOnBoard(gData.board);
-			DrawBoard(gData);
+
 		}
 		break;
 
@@ -449,7 +464,7 @@ void MoveObjectRight(GAMEDATA& gData)
 			gData.obj.lRight.EraseFromBoard(gData.board);
 			gData.obj.lRight.MoveRight();
 			gData.obj.lRight.BurnOnBoard(gData.board);
-			DrawBoard(gData);
+
 		}
 		break;
 
@@ -459,7 +474,7 @@ void MoveObjectRight(GAMEDATA& gData)
 			gData.obj.zLeft.EraseFromBoard(gData.board);
 			gData.obj.zLeft.MoveRight();
 			gData.obj.zLeft.BurnOnBoard(gData.board);
-			DrawBoard(gData);
+
 		}
 		break;
 
@@ -469,7 +484,7 @@ void MoveObjectRight(GAMEDATA& gData)
 			gData.obj.zRight.EraseFromBoard(gData.board);
 			gData.obj.zRight.MoveRight();
 			gData.obj.zRight.BurnOnBoard(gData.board);
-			DrawBoard(gData);
+
 		}
 		break;
 
@@ -488,8 +503,12 @@ void RotateObjectLeft(GAMEDATA& gData)
 	case OBJS::T:
 		gData.obj.t.EraseFromBoard(gData.board);
 		gData.obj.t.RotateLeft();
+
+		if (gData.obj.t.CheckOverlapedCell(gData.board))
+			gData.obj.t.RotateRight();
+
 		gData.obj.t.BurnOnBoard(gData.board);
-		DrawBoard(gData);
+
 		break;
 
 	case OBJS::Square:
@@ -498,36 +517,52 @@ void RotateObjectLeft(GAMEDATA& gData)
 	case OBJS::Stick:
 		gData.obj.stick.EraseFromBoard(gData.board);
 		gData.obj.stick.RotateLeft();
+
+		if (gData.obj.stick.CheckOverlapedCell(gData.board))
+			gData.obj.stick.RotateRight();
+
 		gData.obj.stick.BurnOnBoard(gData.board);
-		DrawBoard(gData);
+
 		break;
 
 	case OBJS::LLeft:
 		gData.obj.lLeft.EraseFromBoard(gData.board);
 		gData.obj.lLeft.RotateLeft();
+
+		if (gData.obj.lLeft.CheckOverlapedCell(gData.board))
+			gData.obj.lLeft.RotateRight();
+
 		gData.obj.lLeft.BurnOnBoard(gData.board);
-		DrawBoard(gData);
 		break;
 
 	case OBJS::LRight:
 		gData.obj.lRight.EraseFromBoard(gData.board);
 		gData.obj.lRight.RotateLeft();
+
+		if (gData.obj.lRight.CheckOverlapedCell(gData.board))
+			gData.obj.lRight.RotateRight();
+
 		gData.obj.lRight.BurnOnBoard(gData.board);
-		DrawBoard(gData);
 		break;
 
 	case OBJS::ZLeft:
 		gData.obj.zLeft.EraseFromBoard(gData.board);
 		gData.obj.zLeft.RotateLeft();
+
+		if (gData.obj.zLeft.CheckOverlapedCell(gData.board))
+			gData.obj.zLeft.RotateRight();
+
 		gData.obj.zLeft.BurnOnBoard(gData.board);
-		DrawBoard(gData);
 		break;
 
 	case OBJS::ZRight:
 		gData.obj.zRight.EraseFromBoard(gData.board);
 		gData.obj.zRight.RotateLeft();
+
+		if (gData.obj.zRight.CheckOverlapedCell(gData.board))
+			gData.obj.zRight.RotateRight();
+
 		gData.obj.zRight.BurnOnBoard(gData.board);
-		DrawBoard(gData);
 		break;
 
 	default:
@@ -547,8 +582,12 @@ void RotateObjectRight(GAMEDATA& gData)
 	case OBJS::T:
 		gData.obj.t.EraseFromBoard(gData.board);
 		gData.obj.t.RotateRight();
+
+		if (gData.obj.t.CheckOverlapedCell(gData.board))
+			gData.obj.t.RotateLeft();
+
 		gData.obj.t.BurnOnBoard(gData.board);
-		DrawBoard(gData);
+
 		break;
 
 	case OBJS::Square:
@@ -557,36 +596,56 @@ void RotateObjectRight(GAMEDATA& gData)
 	case OBJS::Stick:
 		gData.obj.stick.EraseFromBoard(gData.board);
 		gData.obj.stick.RotateRight();
+
+		if (gData.obj.stick.CheckOverlapedCell(gData.board))
+			gData.obj.stick.RotateLeft();
+
 		gData.obj.stick.BurnOnBoard(gData.board);
-		DrawBoard(gData);
+
 		break;
 
 	case OBJS::LLeft:
 		gData.obj.lLeft.EraseFromBoard(gData.board);
 		gData.obj.lLeft.RotateRight();
+
+		if (gData.obj.lLeft.CheckOverlapedCell(gData.board))
+			gData.obj.lLeft.RotateLeft();
+
 		gData.obj.lLeft.BurnOnBoard(gData.board);
-		DrawBoard(gData);
+
 		break;
 
 	case OBJS::LRight:
 		gData.obj.lRight.EraseFromBoard(gData.board);
 		gData.obj.lRight.RotateRight();
+
+		if (gData.obj.lRight.CheckOverlapedCell(gData.board))
+			gData.obj.lRight.RotateLeft();
+
 		gData.obj.lRight.BurnOnBoard(gData.board);
-		DrawBoard(gData);
+
 		break;
 
 	case OBJS::ZLeft:
 		gData.obj.zLeft.EraseFromBoard(gData.board);
 		gData.obj.zLeft.RotateRight();
+
+		if (gData.obj.zLeft.CheckOverlapedCell(gData.board))
+			gData.obj.zLeft.RotateLeft();
+
 		gData.obj.zLeft.BurnOnBoard(gData.board);
-		DrawBoard(gData);
+
 		break;
 
 	case OBJS::ZRight:
 		gData.obj.zRight.EraseFromBoard(gData.board);
 		gData.obj.zRight.RotateRight();
+
+		if (gData.obj.zRight.CheckOverlapedCell(gData.board))
+			gData.obj.zRight.RotateLeft();
+
 		gData.obj.zRight.BurnOnBoard(gData.board);
-		DrawBoard(gData);
+
 		break;
 
 	default:
@@ -681,8 +740,6 @@ void DropDown(GAMEDATA& gData)
 	default:
 		break;
 	}
-
-	DrawBoard(gData);
 }
 
 void DrawObject(GAMEDATA gData)
@@ -827,7 +884,6 @@ void ExecuteInput(GAMEDATA& gData, char input[])
 
 	case KEYS::Down:
 		FallObject(gData);
-		DrawBoard(gData);
 		break;
 
 	case KEYS::Right:
@@ -959,8 +1015,58 @@ void DrawBoard(GAMEDATA gData)
 
 void DrawControls(char input[])
 {
-	COORDS loc = { 5, 5 };
+	COORDS loc = { 2, 1 };
 	CUR cursor;
+	WALLS wall;
+	const int length = 25;
+	const int lines = 11;
+
+	cursor.gotoxy(loc);
+	std::cout << wall.upLeftC;
+	for (int i = 0; i < length - 1; i++)
+	{
+		std::cout << wall.hor;
+	}
+	std::cout << wall.upRightC;
+
+	loc.y++;
+
+	cursor.gotoxy(loc);
+	std::cout << wall.ver << "        CONTROLS        " << wall.ver;
+
+	loc.y++;
+
+	cursor.gotoxy(loc);
+	std::cout << wall.leftT;
+	for (int i = 0; i < length - 1; i++)
+	{
+		std::cout << wall.hor;
+	}
+	std::cout << wall.rightT;
+
+	loc.y++;
+
+	for (int i = 0; i < lines; i++)
+	{
+		cursor.gotoxy({ loc.x, loc.y + i });
+		std::cout << wall.ver;
+	}
+
+	for (int i = 0; i < lines; i++)
+	{
+		cursor.gotoxy({ loc.x + length, loc.y + i });
+		std::cout << wall.ver;
+	}
+
+	cursor.gotoxy({ loc.x, loc.y + lines });
+	std::cout << wall.lowLeftC;
+	for (int i = 0; i < length - 1; i++)
+	{
+		std::cout << wall.hor;
+	}
+	std::cout << wall.lowRightC;
+
+	loc.x += 2;
 
 	cursor.gotoxy(loc);
 	SetColor(BlueOnBlack);
@@ -970,7 +1076,7 @@ void DrawControls(char input[])
 	DrawKeys(loc.y, "Move Left", input[(int)KEYS::Left]);
 	DrawKeys(loc.y, "Move Right", input[(int)KEYS::Right]);
 
-	loc.y += 2;
+	loc.y ++;
 
 	cursor.gotoxy(loc);
 	SetColor(GreenOnBlack);
@@ -980,7 +1086,7 @@ void DrawControls(char input[])
 	DrawKeys(loc.y, "Rotate Left", input[(int)KEYS::RotateL]);
 	DrawKeys(loc.y, "Rotate Right", input[(int)KEYS::RotateR]);
 
-	loc.y += 2;
+	loc.y ++;
 
 	cursor.gotoxy(loc);
 	SetColor(RedOnBlack);
@@ -1115,6 +1221,8 @@ void SetNewSpeed(GAMEDATA& gData, TIME gTime)
 {
 	int speedUpTime = 10;
 
+	DrawTime(gTime.secsElapsed);
+
 	if (gData.frameRate < 10)
 		gData.frameRate = gTime.secsElapsed / speedUpTime + 1;
 }
@@ -1161,7 +1269,7 @@ void CheckOverlaps(GAMEDATA& gData)
 void DrawScore(int score)
 {
 	CUR cursor;
-	COORDS scoreCounterPos = { 90, 5 };
+	COORDS scoreCounterPos = { 45, 3 };
 
 	cursor.gotoxy(scoreCounterPos);
 	std::cout << "Score: " << score << "    ";
@@ -1169,18 +1277,29 @@ void DrawScore(int score)
 	cursor.gotoxy(txtPos);
 }
 
-void DrawFrames(GAMEDATA gData)
+void DrawTime(int time)
+{
+	CUR cursor;
+	COORDS timeCounterPos = { 45, 2 };
+
+	cursor.gotoxy(timeCounterPos);
+	std::cout << "Time: " << time << "    ";
+
+	cursor.gotoxy(txtPos);
+}
+
+void DrawLevel(GAMEDATA gData)
 {
 	CUR cursor;
 
-	cursor.gotoxy({ 0, 0 });
+	cursor.gotoxy({ 45, 1 });
 	SetColor((COLORS)gData.frameRate);
 
-	std::cout << "SPEED: " << gData.frameRate;
+	std::cout << "LEVEL: " << gData.frameRate;
 	SetColor(defColor);
 }
 
-void DrawOnMap(std::string text, int score)
+void DrawOnBoard(std::string text, int score)
 {
 	CUR curPos;
 	short startPopupPosY = 10;
@@ -1287,7 +1406,7 @@ void DrawOnMap(std::string text, int score)
 	SetColor(BlackOnPurple);
 	std::cout << "         Score: " << score;
 	SetColor(WhiteOnPurple);
-	
+
 
 	curPos.gotoxy({ startPopupPosX, (startPopupPosY + lineQty + contiguos) });
 

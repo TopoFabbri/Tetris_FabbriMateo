@@ -126,8 +126,8 @@ void SetKeys(char input[])
 		SetColor(WhiteOnBlack);
 		std::cout << "9: Drop Down (" << input[(int)KEYS::DropDown] << ")" << std::endl << std::endl;
 
+		std::cout << input[(int)KEYS::Back] << ": Go Back" << std::endl << std::endl;
 		SetColor(defColor);
-
 		in = _getch();
 
 		switch (in)
@@ -189,7 +189,7 @@ void SetKeys(char input[])
 		default:
 			break;
 		}
-	} while (in != '0');
+	} while (in != input[(int)KEYS::Back]);
 
 	system("cls");
 }
