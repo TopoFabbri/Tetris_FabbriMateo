@@ -151,7 +151,7 @@ void Stick::Draw()
 
 void Stick::DrawAsNext()
 {
-	COORDS pivotPos = { boardIndent + 20 + maxX, 1 };
+	COORDS pivotPos = { boardIndent + 15 + maxX, 3 };
 	CUR cursor;
 	int cont = 2;
 

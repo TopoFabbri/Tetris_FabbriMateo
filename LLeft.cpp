@@ -142,7 +142,7 @@ void LLeft::Draw()
 
 void LLeft::DrawAsNext()
 {
-	COORDS pivotPos = { boardIndent + 20 + maxX, 1 };
+	COORDS pivotPos = { boardIndent + 16 + maxX, 3 };
 	CUR cursor;
 	int cont = 2;
 

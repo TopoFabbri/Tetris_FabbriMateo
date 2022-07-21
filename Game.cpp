@@ -740,6 +740,8 @@ void DropDown(GAMEDATA& gData)
 	default:
 		break;
 	}
+
+	DrawBoard(gData);
 }
 
 void DrawObject(GAMEDATA gData)
@@ -785,12 +787,49 @@ void DrawObject(GAMEDATA gData)
 void DrawNextObject(GAMEDATA gData)
 {
 	CUR cursor;
+	COORDS loc{ boardIndent + 12 + maxX,  0 };
+	WALLS wall;
+	const int length = 8;
+	const int height = 2;
 
-	SetColor(WhiteOnBlack);
-	cursor.gotoxy({ boardIndent + 15 + maxX, 1 });
-	std::cout << "                             ";
-	cursor.gotoxy({ boardIndent + 15 + maxX, 2 });
-	std::cout << "                             ";
+	SetColor(defColor);
+	cursor.gotoxy(loc);
+
+	std::cout << wall.upLeftC;
+	for (int i = 0; i < length; i++)
+	{
+		std::cout << wall.hor;
+	}
+	std::cout << wall.upRightC;
+
+	loc.y++;
+	cursor.gotoxy(loc);
+	std::cout << wall.ver << "  NEXT  " << wall.ver;
+
+	loc.y++;
+	cursor.gotoxy(loc);
+	std::cout << wall.leftT;
+	for (int i = 0; i < length; i++)
+	{
+		std::cout << wall.hor;
+	}
+	std::cout << wall.rightT;
+
+	for (int i = 0; i < height; i++)
+	{
+		loc.y++;
+		cursor.gotoxy(loc);
+		std::cout << wall.ver << "        " << wall.ver;
+	}
+
+	loc.y++;
+	cursor.gotoxy(loc);
+	std::cout << wall.lowLeftC;
+	for (int i = 0; i < length; i++)
+	{
+		std::cout << wall.hor;
+	}
+	std::cout << wall.lowRightC;
 
 	switch (gData.nextObj)
 	{
@@ -1303,7 +1342,7 @@ void DrawOnBoard(std::string text, int score)
 {
 	CUR curPos;
 	short startPopupPosY = 10;
-	const short startPopupPosX = 54;
+	const short startPopupPosX = 42;
 	const short contiguos = 1;
 	const int lineLength = 29;
 	const short textStart = 4;
@@ -1402,9 +1441,9 @@ void DrawOnBoard(std::string text, int score)
 		SetColor(WhiteOnPurple);
 		std::cout << wall.ver << " ";
 	}
-	curPos.gotoxy({ startPopupPosX + contiguos * 2, (startPopupPosY + 3 + contiguos) });
+	curPos.gotoxy({ startPopupPosX + contiguos * 2, (startPopupPosY + 3) });
 	SetColor(BlackOnPurple);
-	std::cout << "         Score: " << score;
+	std::cout << "         SCORE: " << score;
 	SetColor(WhiteOnPurple);
 
 
