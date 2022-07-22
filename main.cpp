@@ -22,11 +22,11 @@ void RunProgram()
 void Defaults()
 {
     srand(time(nullptr));
+    SetFontSize(28, 28);
     ShowWindow(GetConsoleWindow(), SW_MAXIMIZE);
-    SetConsoleTitleW(L"Tetris(?)");
+    SetConsoleTitleW(L"Tetris");
     system("color 07");
     hidecursor();
-    SetFontSize(28, 28);
 }
 
 void Game()

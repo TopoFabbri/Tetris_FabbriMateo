@@ -22,11 +22,11 @@ void Play(char input[])
 		ExecuteInput(gData, input);
 		CheckChangeObject(gData);
 		SetNewSpeed(gData, gTime);
-		gData.lost = CheckLines(gData);
-
+		gData.lost = CheckLines(gData, gTime);
 
 	} while (gData.inKey != input[(int)KEYS::Back] && !gData.lost);
 
+	EndFill(gData);
 	DrawOnBoard("          You lose!", gData.score);
 }
 
@@ -45,7 +45,7 @@ void FramesOnTitle(int frames)
 
 bool ShouldDropFrame(TIME& gTime, GAMEDATA& gData)
 {
-	gTime.elapsed = clock() - gTime.init;
+	gTime.elapsed = clock() - gTime.init - gTime.pausedTime;
 	gTime.secsElapsed = gTime.elapsed / 1000;
 
 	if (gTime.secsElapsed > gTime.counter)
@@ -70,7 +70,7 @@ void FrameUpdate(GAMEDATA& gData)
 	FallObject(gData);
 }
 
-bool CheckLines(GAMEDATA& gData)
+bool CheckLines(GAMEDATA& gData, TIME& gTime)
 {
 	int rowsCleared = 0;
 	bool end = false;
@@ -96,7 +96,7 @@ bool CheckLines(GAMEDATA& gData)
 			if (fullLine)
 			{
 				rowsCleared++;
-				DestroyLine(gData, y);
+				DestroyLine(gData, y, gTime);
 				break;
 			}
 		}
@@ -137,8 +137,9 @@ bool CheckLines(GAMEDATA& gData)
 	return false;
 }
 
-void DestroyLine(GAMEDATA& gData, int line)
+void DestroyLine(GAMEDATA& gData, int line, TIME& gTime)
 {
+	gTime.pausedStartTime = clock();
 
 	for (int x = 0; x < maxX; x++)
 	{
@@ -178,6 +179,8 @@ void DestroyLine(GAMEDATA& gData, int line)
 
 		DrawLine(gData, y);
 	}
+
+	gTime.pausedTime = clock() - gTime.pausedStartTime;
 }
 
 COLORS GetOpposite(COLORS color)
@@ -241,11 +244,11 @@ void FallObject(GAMEDATA& gData)
 		break;
 
 	case OBJS::Square:
-		if (!gData.obj.square.DownColliding(gData.board))
+		if (!gData.obj.SQUARE.DownColliding(gData.board))
 		{
-			gData.obj.square.EraseFromBoard(gData.board);
-			gData.obj.square.FallOne();
-			gData.obj.square.BurnOnBoard(gData.board);
+			gData.obj.SQUARE.EraseFromBoard(gData.board);
+			gData.obj.SQUARE.FallOne();
+			gData.obj.SQUARE.BurnOnBoard(gData.board);
 		}
 		else
 		{
@@ -347,11 +350,11 @@ void MoveObjectLeft(GAMEDATA& gData)
 		break;
 
 	case OBJS::Square:
-		if (!gData.obj.square.LeftColliding(gData.board))
+		if (!gData.obj.SQUARE.LeftColliding(gData.board))
 		{
-			gData.obj.square.EraseFromBoard(gData.board);
-			gData.obj.square.MoveLeft();
-			gData.obj.square.BurnOnBoard(gData.board);
+			gData.obj.SQUARE.EraseFromBoard(gData.board);
+			gData.obj.SQUARE.MoveLeft();
+			gData.obj.SQUARE.BurnOnBoard(gData.board);
 
 		}
 		break;
@@ -429,11 +432,11 @@ void MoveObjectRight(GAMEDATA& gData)
 		break;
 
 	case OBJS::Square:
-		if (!gData.obj.square.RightColliding(gData.board))
+		if (!gData.obj.SQUARE.RightColliding(gData.board))
 		{
-			gData.obj.square.EraseFromBoard(gData.board);
-			gData.obj.square.MoveRight();
-			gData.obj.square.BurnOnBoard(gData.board);
+			gData.obj.SQUARE.EraseFromBoard(gData.board);
+			gData.obj.SQUARE.MoveRight();
+			gData.obj.SQUARE.BurnOnBoard(gData.board);
 
 		}
 		break;
@@ -674,10 +677,10 @@ void DropDown(GAMEDATA& gData)
 	case OBJS::Square:
 		for (int i = 0; i < maxY; i++)
 		{
-			if (!gData.obj.square.DownColliding(gData.board))
+			if (!gData.obj.SQUARE.DownColliding(gData.board))
 			{
-				gData.obj.square.EraseFromBoard(gData.board);
-				gData.obj.square.FallOne();
+				gData.obj.SQUARE.EraseFromBoard(gData.board);
+				gData.obj.SQUARE.FallOne();
 			}
 		}
 		break;
@@ -756,7 +759,7 @@ void DrawObject(GAMEDATA gData)
 		break;
 
 	case OBJS::Square:
-		gData.obj.square.Draw();
+		gData.obj.SQUARE.Draw();
 		break;
 
 	case OBJS::Stick:
@@ -795,41 +798,7 @@ void DrawNextObject(GAMEDATA gData)
 	SetColor(defColor);
 	cursor.gotoxy(loc);
 
-	std::cout << wall.upLeftC;
-	for (int i = 0; i < length; i++)
-	{
-		std::cout << wall.hor;
-	}
-	std::cout << wall.upRightC;
-
-	loc.y++;
-	cursor.gotoxy(loc);
-	std::cout << wall.ver << "  NEXT  " << wall.ver;
-
-	loc.y++;
-	cursor.gotoxy(loc);
-	std::cout << wall.leftT;
-	for (int i = 0; i < length; i++)
-	{
-		std::cout << wall.hor;
-	}
-	std::cout << wall.rightT;
-
-	for (int i = 0; i < height; i++)
-	{
-		loc.y++;
-		cursor.gotoxy(loc);
-		std::cout << wall.ver << "        " << wall.ver;
-	}
-
-	loc.y++;
-	cursor.gotoxy(loc);
-	std::cout << wall.lowLeftC;
-	for (int i = 0; i < length; i++)
-	{
-		std::cout << wall.hor;
-	}
-	std::cout << wall.lowRightC;
+	DrawBox({ length, height }, loc, true, "NEXT");
 
 	switch (gData.nextObj)
 	{
@@ -841,7 +810,7 @@ void DrawNextObject(GAMEDATA gData)
 		break;
 
 	case OBJS::Square:
-		gData.obj.square.DrawAsNext();
+		gData.obj.SQUARE.DrawAsNext();
 		break;
 
 	case OBJS::Stick:
@@ -976,7 +945,7 @@ void CheckChangeObject(GAMEDATA& gData)
 		break;
 
 	case OBJS::Square:
-		if (!gData.obj.square.current)
+		if (!gData.obj.SQUARE.current)
 		{
 			gData.curObj = gData.nextObj;
 			gData.nextObj = (OBJS)(rand() % objQty + 1);
@@ -1060,52 +1029,10 @@ void DrawControls(char input[])
 	const int length = 25;
 	const int lines = 11;
 
-	cursor.gotoxy(loc);
-	std::cout << wall.upLeftC;
-	for (int i = 0; i < length - 1; i++)
-	{
-		std::cout << wall.hor;
-	}
-	std::cout << wall.upRightC;
-
-	loc.y++;
-
-	cursor.gotoxy(loc);
-	std::cout << wall.ver << "        CONTROLS        " << wall.ver;
-
-	loc.y++;
-
-	cursor.gotoxy(loc);
-	std::cout << wall.leftT;
-	for (int i = 0; i < length - 1; i++)
-	{
-		std::cout << wall.hor;
-	}
-	std::cout << wall.rightT;
-
-	loc.y++;
-
-	for (int i = 0; i < lines; i++)
-	{
-		cursor.gotoxy({ loc.x, loc.y + i });
-		std::cout << wall.ver;
-	}
-
-	for (int i = 0; i < lines; i++)
-	{
-		cursor.gotoxy({ loc.x + length, loc.y + i });
-		std::cout << wall.ver;
-	}
-
-	cursor.gotoxy({ loc.x, loc.y + lines });
-	std::cout << wall.lowLeftC;
-	for (int i = 0; i < length - 1; i++)
-	{
-		std::cout << wall.hor;
-	}
-	std::cout << wall.lowRightC;
+	DrawBox({ length, lines }, loc, false, "CONTROLS ");
 
 	loc.x += 2;
+	loc.y += 3;
 
 	cursor.gotoxy(loc);
 	SetColor(BlueOnBlack);
@@ -1115,7 +1042,7 @@ void DrawControls(char input[])
 	DrawKeys(loc.y, "Move Left", input[(int)KEYS::Left]);
 	DrawKeys(loc.y, "Move Right", input[(int)KEYS::Right]);
 
-	loc.y ++;
+	loc.y++;
 
 	cursor.gotoxy(loc);
 	SetColor(GreenOnBlack);
@@ -1125,7 +1052,7 @@ void DrawControls(char input[])
 	DrawKeys(loc.y, "Rotate Left", input[(int)KEYS::RotateL]);
 	DrawKeys(loc.y, "Rotate Right", input[(int)KEYS::RotateR]);
 
-	loc.y ++;
+	loc.y++;
 
 	cursor.gotoxy(loc);
 	SetColor(RedOnBlack);
@@ -1226,7 +1153,7 @@ void PlaceObjects(GAMEDATA& gData)
 		break;
 
 	case OBJS::Square:
-		gData.obj.square.Place();
+		gData.obj.SQUARE.Place();
 		break;
 
 	case OBJS::Stick:
@@ -1459,4 +1386,55 @@ void DrawOnBoard(std::string text, int score)
 	SetColor(WhiteOnBlack);
 	curPos.gotoxy(txtPos);
 	system("pause");
+}
+
+
+void EndFill(GAMEDATA& gData)
+{
+	int animDelay = 1;
+	CUR cur;
+	SQUARE sqr[maxX][maxY];
+
+	ResetBoard(gData.board);
+	DrawBoard(gData);
+
+	for (int y = maxY - 1; y >= 0; y--)
+	{
+		for (int x = 0; x < maxX; x++)
+		{
+			sqr[x][y] = sqr[x][y].Create(x);
+			cur.gotoxy(ConLoc(sqr[x][y].pos));
+			SetColor(sqr[x][y].color);
+			std::cout << "  ";
+		}
+
+		if (!_kbhit())
+			Sleep(animDelay * 10);
+
+		for (int j = maxY - 1; j >= y; j--)
+		{
+			for (int i = 0; i < maxX; i++)
+			{
+				if (!sqr[i][j].inPlace)
+				{
+					sqr[i][j].Fall(gData.board);
+				}
+			}
+		}
+		if (!_kbhit())
+			Sleep(100 * animDelay);
+	}
+
+	SetColor(defColor);
+
+	for (int y = 0; y < maxY; y++)
+	{
+		CUR cur;
+		cur.gotoxy(ConLoc({ 0, y }));
+
+		std::cout << "                    ";
+
+		if (!_kbhit())
+			Sleep(animDelay);
+	}
 }

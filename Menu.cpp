@@ -54,12 +54,65 @@ void Menu()
 void Credits(char input[])
 {
 	system("cls");
+	COORDS boxSize{ 115, 25 };
+	COORDS initPos{ 50, 15 };
+	CREDS creds;
+	char key = ' ';
 
-	char btnTxt[txtMaxLength][maxButtons];
-	int selector;
+	for (int y = 0; y < 2; y++)
+	{
+		for (int x = 0; x < 4; x++)
+		{
+			creds.squarePos[x][y] = { initPos.x + x * 2, initPos.y + y };
+			creds.squareColor[x][y] = (y == 0 ? WhiteOnBlue : WhiteOnOrange);
+		}
+	}
 
-	PrintTitle("CREDITS");
-	MenuNavigator(0, btnTxt, input, selector);
+	creds.squareColor[0][1] = WhiteOnBlue;
+	creds.squareColor[3][0] = WhiteOnOrange;
+
+	do
+	{
+		creds.velocity = { ((rand() % 1 - 2) * 2), (rand() % 2 - 1) };
+
+	} while (creds.velocity.x == 0 || creds.velocity.y == 0);
+
+	DrawBox(boxSize, { 0, 0 }, true);
+
+	do
+	{
+		CheckCollide(creds, boxSize);
+
+		if (clock() % 150 == 0)
+			creds.Move();
+
+		if (_kbhit())
+			key = _getch();
+
+	} while (key != input[(int)KEYS::Back]);
+}
+
+void CheckCollide(CREDS& creds, COORDS boardSize)
+{
+	if (creds.squarePos[0][0].x <= 2)
+	{
+		creds.velocity.x = 2;
+	}
+
+	if (creds.squarePos[0][0].y <= 1)
+	{
+		creds.velocity.y = 1;
+	}
+
+	if (creds.squarePos[3][1].x >= boardSize.x - 2)
+	{
+		creds.velocity.x = -2;
+	}
+
+	if (creds.squarePos[3][1].y >= boardSize.y)
+	{
+		creds.velocity.y = -1;
+	}
 }
 
 void Settings(char input[])
@@ -79,7 +132,7 @@ void Settings(char input[])
 
 		if (selector == 1)
 			SetKeys(input);
-			
+
 	} while (selector != 0);
 }
 

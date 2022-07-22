@@ -84,47 +84,53 @@ int GetMenuInput(int& cursor, char input[], int opsQty)
 
 void PrintOptions(char displayText[10][10], int ops, int cursor)
 {
+	COORDS pos{ 55, 5 };
 	WALLS wall;
+	CUR cur;
 
 	const short boxLength = 15;
 	const int boxSpace = 10;
 	int line[3] = { 5, 6, 7 };
 
 	if (ops == cursor)
-		SetColor(PurpleOnBlack);
-	else
-		SetColor(BlackOnBlack);
-
-	COORD curPos = { boxLength * ops, (short)line[0] };
-	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), curPos);
-	std::cout << wall.upLeftC;
-	for (int i = 0; i < boxSpace; i++)
 	{
-		std::cout << wall.hor;
+		SetColor((COLORS)(ops + 4));
+
+		cur.gotoxy(pos);
+
+		std::cout << wall.upLeftC;
+		for (int i = 0; i < boxSpace; i++)
+		{
+			std::cout << wall.hor;
+		}
+		std::cout << wall.upRightC;
+		pos.y++;
+
+		cur.gotoxy(pos);
+		std::cout << wall.ver;
+		for (int i = 0; i < boxSpace; i++)
+		{
+			std::cout << displayText[ops][i];
+		}
+		std::cout << wall.ver;
+		pos.y++;
+
+		cur.gotoxy(pos);
+		std::cout << wall.lowLeftC;
+		for (int i = 0; i < boxSpace; i++)
+		{
+			std::cout << wall.hor;
+		}
+		std::cout << wall.lowRightC;
+
+		cur.gotoxy({ pos.x + boxSpace + 3, pos.y - 1 });
+		std::cout << ">>";
+
+		cur.gotoxy({ pos.x - 3, pos.y - 1 });
+		std::cout << "<<";
+
 	}
-	std::cout << wall.upRightC;
-
-	curPos = { (short)(boxLength * ops), (short)line[1] };
-	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), curPos);
-	std::cout << wall.ver;
-	for (int i = 0; i < boxSpace; i++)
-	{
-		std::cout << displayText[ops][i];
-	}
-	std::cout << wall.ver;
-
-	curPos = { (short)(boxLength * ops), (short)line[2] };
-	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), curPos);
-	std::cout << wall.lowLeftC;
-	for (int i = 0; i < boxSpace; i++)
-	{
-		std::cout << wall.hor;
-	}
-	std::cout << wall.lowRightC;
-
-	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), WhiteOnBlack);
-
-	std::cout << std::endl << std::endl;
+	SetColor(defColor);
 }
 
 void PrintTitle(std::string title)

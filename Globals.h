@@ -2,13 +2,14 @@
 
 #include <iostream>
 #include <Windows.h>
+#include <time.h>
 
 const int txtMaxLength = 10;
 const int maxButtons = 10;
 const int maxX = 10;
 const int maxY = 24;
 const int boardIndent = 60;
-const char sqr = 177;// 32
+const char sqr = 32;//177 
 const int defFrameUpdate = 1;
 
 enum class ROT
@@ -60,6 +61,7 @@ enum COLORS
 	OrangeOnBlack = 12,
 	WhiteOnBlack = 15,
 	BlackOnBlue = 16,
+	WhiteOnBlue = 31,
 	BlackOnGreen = 32,
 	BlackOnLightBlue = 48,
 	BlackOnRed = 64,
@@ -69,6 +71,7 @@ enum COLORS
 	BlackOnGray = 128,
 	BlackOnCyan = 176,
 	BlackOnOrange = 192,
+	WhiteOnOrange = 207,
 	BlackOnWhite = 240,
 	BlueOnWhite = 241,
 	GreenOnWhite = 242,
@@ -132,6 +135,9 @@ const COORDS txtPos{ 0, 30 };
 const COORDS pos0{ 0, 0 };
 
 COORDS ConLoc(COORDS boardLoc);
+void DrawBox(COORDS size, COORDS pos, bool fill);
+void DrawBox(COORDS size, COORDS pos, bool fill, std::string title);
 void SetColor(COLORS color);
 void hidecursor();
+COLORS GetRandomColor();
 void SetFontSize(int sizeX, int sizeY);

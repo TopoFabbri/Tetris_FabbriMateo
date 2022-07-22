@@ -35,17 +35,59 @@ struct TIME
 	int elapsed;
 	int secsElapsed;
 	int counter = 0;
+	int pausedTime = 0;
+	int pausedStartTime = 0;
 };
 
 struct OBJECTS
 {
 	T t;
-	Square square;
+	Square SQUARE;
 	Stick stick;
 	LLeft lLeft;
 	LRight lRight;
 	ZLeft zLeft;
 	ZRight zRight;
+};
+
+struct SQUARE
+{
+	COORDS pos;
+	COLORS color;
+	int fallingSpeed = 1;
+	bool inPlace = false;
+
+	SQUARE Create(int posX)
+	{
+		return { {posX, 0}, GetRandomColor(), 1 };
+	}
+
+	void Fall(CELL board[maxX][maxY])
+	{
+		CUR cur;
+		cur.gotoxy(ConLoc(pos));
+		SetColor(defColor);
+		std::cout << "  ";
+		for (int i = 0; i <= fallingSpeed; i++)
+		{
+			if (board[pos.x][pos.y + 1].state == CELLSTATE::Static || pos.y + 1 >= maxY)
+			{
+				board[pos.x][pos.y].state = CELLSTATE::Static;
+				inPlace = true;
+				break;
+			}
+			else
+			{
+				pos.y++;
+			}
+		}
+
+		fallingSpeed++;
+
+		cur.gotoxy(ConLoc(pos));
+		SetColor(color);
+		std::cout << "  ";
+	}
 };
 
 struct GAMEDATA
@@ -64,11 +106,11 @@ struct GAMEDATA
 };
 
 KEYS GetKeys(GAMEDATA& gData, char input[]);
-bool CheckLines(GAMEDATA& gData);
+bool CheckLines(GAMEDATA& gData, TIME& gTime);
 bool ShouldDropFrame(TIME& gTime, GAMEDATA& gData);
 void FrameUpdate(GAMEDATA& gData);
 void ExecuteInput(GAMEDATA& gData, char input[]);
-void DestroyLine(GAMEDATA& gData, int line);
+void DestroyLine(GAMEDATA& gData, int line, TIME& gTime);
 COLORS GetOpposite(COLORS color);
 void FallObject(GAMEDATA& gData);
 void RotateObjectLeft(GAMEDATA& gData);
@@ -94,4 +136,7 @@ void DrawScore(int score);
 void DrawTime(int time);
 void DrawNextObject(GAMEDATA gData);
 void DrawLevel(GAMEDATA gData);
+void DrawBox(COORDS size, COORDS pos, bool fill);
+void DrawBox(COORDS size, COORDS pos, bool fill, std::string title);
 void DrawOnBoard(std::string text, int score);
+void EndFill(GAMEDATA& gData);
