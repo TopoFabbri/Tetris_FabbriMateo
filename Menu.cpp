@@ -58,7 +58,7 @@ void Credits(char input[])
 	COORDS initPos{ 50, 15 };
 	CREDS creds;
 	char key = ' ';
-
+	
 	for (int y = 0; y < 2; y++)
 	{
 		for (int x = 0; x < 4; x++)

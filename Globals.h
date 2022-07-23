@@ -4,10 +4,12 @@
 #include <Windows.h>
 #include <time.h>
 
+#pragma comment(lib, "winmm")
+
 const int txtMaxLength = 10;
 const int maxButtons = 10;
 const int maxX = 10;
-const int maxY = 24;
+const int maxY = 25;
 const int boardIndent = 60;
 const char sqr = 32;//177 
 const int defFrameUpdate = 1;
@@ -130,7 +132,7 @@ struct CELL
 	COLORS color = defColor;
 };
 
-const COORDS initPiecePos{ 5, 0 };
+const COORDS initPiecePos{ 5, 1 };
 const COORDS txtPos{ 0, 25 };
 const COORDS pos0{ 0, 0 };
 
@@ -140,4 +142,4 @@ void DrawBox(COORDS size, COORDS pos, bool fill, std::string title);
 void SetColor(COLORS color);
 void hidecursor();
 COLORS GetRandomColor();
-void SetFontSize(int sizeX, int sizeY);
+void SetFontSize(int size);

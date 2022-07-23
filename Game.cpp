@@ -14,13 +14,11 @@ void Play(char input[])
 
 	do
 	{
-		if (ShouldDropFrame(gTime, gData))
-			FrameUpdate(gData);
-
+		FrameUpdate(gData, gTime);
 		DrawLevel(gData);
 		DrawBoard(gData);
-		ExecuteInput(gData, input);
 		CheckChangeObject(gData);
+		ExecuteInput(gData, input);
 		SetNewSpeed(gData, gTime);
 		gData.lost = CheckLines(gData, gTime);
 
@@ -32,7 +30,7 @@ void Play(char input[])
 
 void FramesOnTitle(int frames)
 {
-	std::string tmp = "Tetris Frames: ";
+	std::string tmp = "Tetris    FPS: ";
 	std::ostringstream str1;
 	str1 << frames;
 
@@ -43,31 +41,16 @@ void FramesOnTitle(int frames)
 	SetConsoleTitleW(title);
 }
 
-bool ShouldDropFrame(TIME& gTime, GAMEDATA& gData)
+void FrameUpdate(GAMEDATA& gData, TIME& gTime)
 {
-	gTime.elapsed = clock() - gTime.init - gTime.pausedTime;
-	gTime.secsElapsed = gTime.elapsed / 1000;
+	gTime.secsElapsed = (clock() - gTime.init - gTime.pausedTime) / 1000;
+	FramesOnTitle(gData.frames / (gTime.secsElapsed + 1));
 
-	if (gTime.secsElapsed > gTime.counter)
+	if (gTime.elapsed + gData.timeLimit < clock() - gTime.init - gTime.pausedTime)
 	{
-		gData.frame = 0;
-		gTime.counter++;
+		gTime.elapsed = clock() - gTime.init - gTime.pausedTime;
+		FallObject(gData);
 	}
-
-	int fraction = 1000 / gData.frameRate;
-	int fractionReached = (gTime.elapsed - gTime.secsElapsed * 1000) / fraction;
-
-	fractionReached = (fractionReached < 1 ? 1 : fractionReached);
-
-	bool callFrame = (fractionReached > gData.frame);
-	return callFrame;
-}
-
-void FrameUpdate(GAMEDATA& gData)
-{
-	gData.frame++;
-	FramesOnTitle(gData.frame);
-	FallObject(gData);
 }
 
 bool CheckLines(GAMEDATA& gData, TIME& gTime)
@@ -128,7 +111,7 @@ bool CheckLines(GAMEDATA& gData, TIME& gTime)
 
 	for (int x = 0; x < maxX; x++)
 	{
-		if (gData.board[x][0].state == CELLSTATE::Static)
+		if (gData.board[x][1].state == CELLSTATE::Static)
 		{
 			return true;
 		}
@@ -180,7 +163,7 @@ void DestroyLine(GAMEDATA& gData, int line, TIME& gTime)
 		DrawLine(gData, y);
 	}
 
-	gTime.pausedTime = clock() - gTime.pausedStartTime;
+	gTime.pausedTime += clock() - gTime.pausedStartTime;
 }
 
 COLORS GetOpposite(COLORS color)
@@ -1003,17 +986,19 @@ void CheckChangeObject(GAMEDATA& gData)
 	}
 }
 
-void DrawBoard(GAMEDATA gData)
+void DrawBoard(GAMEDATA& gData)
 {
 	WALLS wall;
 	CUR cursor;
+
+	gData.frames++;
 
 	cursor.gotoxy(pos0);
 	DrawFirstLine(maxX);
 
 	for (int y = 0; y < maxY; y++)
 	{
-		cursor.gotoxy({ boardIndent, y });
+		cursor.gotoxy({ boardIndent, y - 1});
 		DrawLine(gData, y);
 	}
 
@@ -1183,14 +1168,16 @@ void PlaceObjects(GAMEDATA& gData)
 	DrawNextObject(gData);
 }
 
-void SetNewSpeed(GAMEDATA& gData, TIME gTime)
+void SetNewSpeed(GAMEDATA& gData, TIME& gTime)
 {
-	int speedUpTime = 10;
-
 	DrawTime(gTime.secsElapsed);
 
-	if (gData.frameRate < 10)
-		gData.frameRate = gTime.secsElapsed / speedUpTime + 1;
+	if (gTime.secsElapsed > gTime.speedUpTime && gData.speed < 10)
+	{
+		gData.speed++;
+		gData.timeLimit = gData.timeLimit / 4 * 3;
+		gTime.speedUpTime += 10;
+	}
 }
 
 void CheckOverlaps(GAMEDATA& gData)
@@ -1259,9 +1246,9 @@ void DrawLevel(GAMEDATA gData)
 	CUR cursor;
 
 	cursor.gotoxy({ 45, 1 });
-	SetColor((COLORS)gData.frameRate);
+	SetColor((COLORS)gData.speed);
 
-	std::cout << "LEVEL: " << gData.frameRate;
+	std::cout << "LEVEL: " << gData.speed;
 	SetColor(defColor);
 }
 
