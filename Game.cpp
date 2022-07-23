@@ -1388,7 +1388,6 @@ void DrawOnBoard(std::string text, int score)
 	system("pause");
 }
 
-
 void EndFill(GAMEDATA& gData)
 {
 	int animDelay = 1;
@@ -1396,13 +1395,14 @@ void EndFill(GAMEDATA& gData)
 	SQUARE sqr[maxX][maxY];
 
 	ResetBoard(gData.board);
+	gData.curObj = OBJS::None;
 	DrawBoard(gData);
 
 	for (int y = maxY - 1; y >= 0; y--)
 	{
 		for (int x = 0; x < maxX; x++)
 		{
-			sqr[x][y] = sqr[x][y].Create(x);
+			sqr[x][y] = sqr[x][y].Create(x, (maxX - x));
 			cur.gotoxy(ConLoc(sqr[x][y].pos));
 			SetColor(sqr[x][y].color);
 			std::cout << "  ";

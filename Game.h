@@ -57,9 +57,9 @@ struct SQUARE
 	int fallingSpeed = 1;
 	bool inPlace = false;
 
-	SQUARE Create(int posX)
+	SQUARE Create(int posX, int initSpeed)
 	{
-		return { {posX, 0}, GetRandomColor(), 1 };
+		return { {posX, 0}, GetRandomColor(), initSpeed };
 	}
 
 	void Fall(CELL board[maxX][maxY])
@@ -81,7 +81,6 @@ struct SQUARE
 				pos.y++;
 			}
 		}
-
 		fallingSpeed++;
 
 		cur.gotoxy(ConLoc(pos));

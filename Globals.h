@@ -131,7 +131,7 @@ struct CELL
 };
 
 const COORDS initPiecePos{ 5, 0 };
-const COORDS txtPos{ 0, 30 };
+const COORDS txtPos{ 0, 25 };
 const COORDS pos0{ 0, 0 };
 
 COORDS ConLoc(COORDS boardLoc);

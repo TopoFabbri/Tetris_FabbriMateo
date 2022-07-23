@@ -22,7 +22,7 @@ void RunProgram()
 void Defaults()
 {
     srand(time(nullptr));
-    SetFontSize(28, 28);
+    SetFontSize(29, 29);
     ShowWindow(GetConsoleWindow(), SW_MAXIMIZE);
     SetConsoleTitleW(L"Tetris");
     system("color 07");

@@ -54,7 +54,7 @@ void Menu()
 void Credits(char input[])
 {
 	system("cls");
-	COORDS boxSize{ 115, 25 };
+	COORDS boxSize{ 109, 25 };
 	COORDS initPos{ 50, 15 };
 	CREDS creds;
 	char key = ' ';
@@ -96,22 +96,130 @@ void CheckCollide(CREDS& creds, COORDS boardSize)
 {
 	if (creds.squarePos[0][0].x <= 2)
 	{
+		COLORS newBlue;
+		COLORS newOrange;
 		creds.velocity.x = 2;
+		
+		do
+		{
+			newOrange = (COLORS)(rand() % 15 + 192);
+		} while (newOrange == 204);
+
+		do
+		{
+			newBlue = (COLORS)(rand() % 15 + 16);
+		} while (newBlue == 17);
+
+		for (int y = 0; y < 2; y++)
+		{
+			for (int x = 0; x < 4; x++)
+			{
+				if (creds.squareColor[x][y] <= 207 && creds.squareColor[x][y] >= 192)
+				{
+					creds.squareColor[x][y] = newOrange;
+				}
+				else
+				{
+					creds.squareColor[x][y] = newBlue;
+				}
+			}
+		}
 	}
 
 	if (creds.squarePos[0][0].y <= 1)
 	{
+		COLORS newBlue;
+		COLORS newOrange;
 		creds.velocity.y = 1;
+		
+		do
+		{
+			newOrange = (COLORS)(rand() % 15 + 192);
+		} while (newOrange == 204);
+
+		do
+		{
+			newBlue = (COLORS)(rand() % 15 + 16);
+		} while (newBlue == 17);
+
+		for (int y = 0; y < 2; y++)
+		{
+			for (int x = 0; x < 4; x++)
+			{
+				if (creds.squareColor[x][y] <= 207 && creds.squareColor[x][y] >= 192)
+				{
+					creds.squareColor[x][y] = newOrange;
+				}
+				else
+				{
+					creds.squareColor[x][y] = newBlue;
+				}
+			}
+		}
 	}
 
 	if (creds.squarePos[3][1].x >= boardSize.x - 2)
 	{
+		COLORS newBlue;
+		COLORS newOrange;
 		creds.velocity.x = -2;
+	
+		do
+		{
+			newOrange = (COLORS)(rand() % 15 + 192);
+		} while (newOrange == 204);
+
+		do
+		{
+			newBlue = (COLORS)(rand() % 15 + 16);
+		} while (newBlue == 17);
+
+		for (int y = 0; y < 2; y++)
+		{
+			for (int x = 0; x < 4; x++)
+			{
+				if (creds.squareColor[x][y] <= 207 && creds.squareColor[x][y] >= 192)
+				{
+					creds.squareColor[x][y] = newOrange;
+				}
+				else
+				{
+					creds.squareColor[x][y] = newBlue;
+				}
+			}
+		}
 	}
 
 	if (creds.squarePos[3][1].y >= boardSize.y)
 	{
+		COLORS newBlue;
+		COLORS newOrange;
 		creds.velocity.y = -1;
+
+		do
+		{
+			newOrange = (COLORS)(rand() % 15 + 192);
+		} while (newOrange == 204);
+
+		do
+		{
+			newBlue = (COLORS)(rand() % 15 + 16);
+		} while (newBlue == 17);
+
+		for (int y = 0; y < 2; y++)
+		{
+			for (int x = 0; x < 4; x++)
+			{
+				if (creds.squareColor[x][y] <= 207 && creds.squareColor[x][y] >= 192)
+				{
+					creds.squareColor[x][y] = newOrange;
+				}
+				else
+				{
+					creds.squareColor[x][y] = newBlue;
+				}
+			}
+		}
 	}
 }
 
