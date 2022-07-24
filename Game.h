@@ -76,7 +76,7 @@ struct SQUARE
 				SetColor(defColor);
 				std::cout << "  ";
 			}
-			if (board[pos.x][pos.y + 1].state == CELLSTATE::Static || pos.y + 1 >= maxY)
+			if (pos.y + 1 >= maxY || board[pos.x][pos.y + 1].state == CELLSTATE::Static)
 			{
 				board[pos.x][pos.y].state = CELLSTATE::Static;
 				inPlace = true;
