@@ -1385,7 +1385,6 @@ void EndFill(GAMEDATA& gData)
 
 	ResetBoard(gData.board);
 	gData.curObj = OBJS::None;
-	DrawBoard(gData);
 
 	PlaySound(TEXT("gameover.wav"), NULL, SND_ASYNC);
 
@@ -1399,9 +1398,6 @@ void EndFill(GAMEDATA& gData)
 			std::cout << "  ";
 		}
 
-		if (!_kbhit())
-			Sleep(animDelay);
-
 		for (int j = maxY - 1; j >= y; j--)
 		{
 			for (int i = 0; i < maxX; i++)
@@ -1412,8 +1408,6 @@ void EndFill(GAMEDATA& gData)
 				}
 			}
 		}
-		if (!_kbhit())
-			Sleep(animDelay);
 	}
 
 	SetColor(defColor);

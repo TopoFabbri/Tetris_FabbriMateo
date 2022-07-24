@@ -13,6 +13,8 @@
 #include <iostream>
 #include <string>
 #include <sstream>
+#include <thread>
+#include <chrono>
 
 const int objQty = 7;
 const int timeBomb = 2000;
@@ -66,11 +68,14 @@ struct SQUARE
 	void Fall(CELL board[maxX][maxY])
 	{
 		CUR cur;
-		cur.gotoxy(ConLoc(pos));
-		SetColor(defColor);
-		std::cout << "  ";
 		for (int i = 0; i <= fallingSpeed; i++)
 		{
+			if (board[pos.x][pos.y + 1].state == CELLSTATE::Empty && pos.y < maxY - 1)
+			{
+				cur.gotoxy(ConLoc(pos));
+				SetColor(defColor);
+				std::cout << "  ";
+			}
 			if (board[pos.x][pos.y + 1].state == CELLSTATE::Static || pos.y + 1 >= maxY)
 			{
 				board[pos.x][pos.y].state = CELLSTATE::Static;
@@ -81,12 +86,15 @@ struct SQUARE
 			{
 				pos.y++;
 			}
+			cur.gotoxy(ConLoc(pos));
+			SetColor(color);
+			std::cout << "  ";
+
+			if (!_kbhit())
+				std::this_thread::sleep_for(std::chrono::nanoseconds(925));
 		}
 		fallingSpeed++;
 
-		cur.gotoxy(ConLoc(pos));
-		SetColor(color);
-		std::cout << "  ";
 	}
 };
 
