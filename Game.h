@@ -70,7 +70,7 @@ struct SQUARE
 		CUR cur;
 		for (int i = 0; i <= fallingSpeed; i++)
 		{
-			if (board[pos.x][pos.y + 1].state == CELLSTATE::Empty && pos.y < maxY - 1)
+			if (pos.y < maxY - 1 && board[pos.x][pos.y + 1].state == CELLSTATE::Empty)
 			{
 				cur.gotoxy(ConLoc(pos));
 				SetColor(defColor);
