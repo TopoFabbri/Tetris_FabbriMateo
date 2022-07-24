@@ -70,11 +70,11 @@ void LLeft::RotationDown()
 
 void LLeft::Kick()
 {
-	if (left.x >= maxX - 1 || corner.x >= maxX - 1 || down.x >= maxX - 1)
+	if (left.x >= maxX || corner.x >= maxX || down.x >= maxX)
 	{
 		MoveLeft();
 	}
-	else if (left.x <= 0 || corner.x <= 0 || down.x <= 0)
+	else if (left.x < 0 || corner.x < 0 || down.x < 0)
 	{
 		MoveRight();
 	}
@@ -234,7 +234,6 @@ void LLeft::RotateRight()
 		rot = ROT::Up;
 
 	SetRotation();
-	Kick();
 }
 
 void LLeft::RotateLeft()
@@ -245,7 +244,6 @@ void LLeft::RotateLeft()
 		rot = ROT::Left;
 
 	SetRotation();
-	Kick();
 }
 
 void LLeft::BurnOnBoard(CELL board[maxX][maxY])

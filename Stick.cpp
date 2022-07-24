@@ -70,20 +70,20 @@ void Stick::RotationDown()
 
 void Stick::Kick()
 {
-	if (left.x >= maxX - 1 || right.x >= maxX - 1 || centerRight.x >= maxX - 1)
+	if (left.x >= maxX || right.x >= maxX || centerRight.x >= maxX)
 	{
 		MoveLeft();
 	}
-	else if (left.x <= 0 || right.x <= 0 || centerRight.x <= 0)
+	else if (left.x < 0 || right.x < 0 || centerRight.x < 0)
 	{
 		MoveRight();
 	}
 
-	if (left.x >= maxX - 1 || right.x >= maxX - 1 || centerRight.x >= maxX - 1)
+	if (left.x > maxX || right.x > maxX || centerRight.x > maxX)
 	{
 		MoveLeft();
 	}
-	else if (left.x <= 0 || right.x <= 0 || centerRight.x <= 0)
+	else if (left.x < 0 || right.x < 0 || centerRight.x < 0)
 	{
 		MoveRight();
 	}
@@ -243,7 +243,6 @@ void Stick::RotateRight()
 		rot = ROT::Up;
 
 	SetRotation();
-	Kick();
 }
 
 void Stick::RotateLeft()
@@ -254,7 +253,6 @@ void Stick::RotateLeft()
 		rot = ROT::Left;
 
 	SetRotation();
-	Kick();
 }
 
 void Stick::BurnOnBoard(CELL board[maxX][maxY])

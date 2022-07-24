@@ -19,9 +19,8 @@ void Play(char input[])
 		FrameUpdate(gData, gTime);
 		DrawLevel(gData);
 		DrawBoard(gData);
-		CheckChangeObject(gData);
-		gData.lost = CheckLines(gData, gTime);
 		ExecuteInput(gData, input);
+		gData.lost = CheckLines(gData, gTime);
 		SetNewSpeed(gData, gTime);
 
 	} while (gData.inKey != input[(int)KEYS::Back] && !gData.lost);
@@ -51,7 +50,9 @@ void FrameUpdate(GAMEDATA& gData, TIME& gTime)
 	if (gTime.elapsed + gData.timeLimit < clock() - gTime.init - gTime.pausedTime)
 	{
 		gTime.elapsed = clock() - gTime.init - gTime.pausedTime;
-		FallObject(gData);
+
+		if (!CheckChangeObject(gData))
+			FallObject(gData);
 	}
 }
 
@@ -495,6 +496,7 @@ void RotateObjectLeft(GAMEDATA& gData)
 		if (gData.obj.t.CheckOverlapedCell(gData.board))
 			gData.obj.t.RotateRight();
 
+		gData.obj.t.Kick();
 		gData.obj.t.BurnOnBoard(gData.board);
 
 		break;
@@ -509,6 +511,7 @@ void RotateObjectLeft(GAMEDATA& gData)
 		if (gData.obj.stick.CheckOverlapedCell(gData.board))
 			gData.obj.stick.RotateRight();
 
+		gData.obj.stick.Kick();
 		gData.obj.stick.BurnOnBoard(gData.board);
 
 		break;
@@ -520,6 +523,7 @@ void RotateObjectLeft(GAMEDATA& gData)
 		if (gData.obj.lLeft.CheckOverlapedCell(gData.board))
 			gData.obj.lLeft.RotateRight();
 
+		gData.obj.lLeft.Kick();
 		gData.obj.lLeft.BurnOnBoard(gData.board);
 		break;
 
@@ -530,6 +534,7 @@ void RotateObjectLeft(GAMEDATA& gData)
 		if (gData.obj.lRight.CheckOverlapedCell(gData.board))
 			gData.obj.lRight.RotateRight();
 
+		gData.obj.lRight.Kick();
 		gData.obj.lRight.BurnOnBoard(gData.board);
 		break;
 
@@ -540,6 +545,7 @@ void RotateObjectLeft(GAMEDATA& gData)
 		if (gData.obj.zLeft.CheckOverlapedCell(gData.board))
 			gData.obj.zLeft.RotateRight();
 
+		gData.obj.zLeft.Kick();
 		gData.obj.zLeft.BurnOnBoard(gData.board);
 		break;
 
@@ -550,6 +556,7 @@ void RotateObjectLeft(GAMEDATA& gData)
 		if (gData.obj.zRight.CheckOverlapedCell(gData.board))
 			gData.obj.zRight.RotateRight();
 
+		gData.obj.zRight.Kick();
 		gData.obj.zRight.BurnOnBoard(gData.board);
 		break;
 
@@ -574,6 +581,7 @@ void RotateObjectRight(GAMEDATA& gData)
 		if (gData.obj.t.CheckOverlapedCell(gData.board))
 			gData.obj.t.RotateLeft();
 
+		gData.obj.t.Kick();
 		gData.obj.t.BurnOnBoard(gData.board);
 
 		break;
@@ -588,6 +596,7 @@ void RotateObjectRight(GAMEDATA& gData)
 		if (gData.obj.stick.CheckOverlapedCell(gData.board))
 			gData.obj.stick.RotateLeft();
 
+		gData.obj.stick.Kick();
 		gData.obj.stick.BurnOnBoard(gData.board);
 
 		break;
@@ -599,6 +608,7 @@ void RotateObjectRight(GAMEDATA& gData)
 		if (gData.obj.lLeft.CheckOverlapedCell(gData.board))
 			gData.obj.lLeft.RotateLeft();
 
+		gData.obj.lLeft.Kick();
 		gData.obj.lLeft.BurnOnBoard(gData.board);
 
 		break;
@@ -610,6 +620,7 @@ void RotateObjectRight(GAMEDATA& gData)
 		if (gData.obj.lRight.CheckOverlapedCell(gData.board))
 			gData.obj.lRight.RotateLeft();
 
+		gData.obj.lRight.Kick();
 		gData.obj.lRight.BurnOnBoard(gData.board);
 
 		break;
@@ -621,7 +632,7 @@ void RotateObjectRight(GAMEDATA& gData)
 		if (gData.obj.zLeft.CheckOverlapedCell(gData.board))
 			gData.obj.zLeft.RotateLeft();
 
-		gData.obj.zLeft.BurnOnBoard(gData.board);
+		gData.obj.zLeft.Kick();
 
 		break;
 
@@ -632,6 +643,7 @@ void RotateObjectRight(GAMEDATA& gData)
 		if (gData.obj.zRight.CheckOverlapedCell(gData.board))
 			gData.obj.zRight.RotateLeft();
 
+		gData.obj.zRight.Kick();
 		gData.obj.zRight.BurnOnBoard(gData.board);
 
 		break;
@@ -909,7 +921,7 @@ void ExecuteInput(GAMEDATA& gData, char input[])
 	}
 }
 
-void CheckChangeObject(GAMEDATA& gData)
+bool CheckChangeObject(GAMEDATA& gData)
 {
 	int extraTime = clock() - gData.collisionTime;
 
@@ -926,6 +938,7 @@ void CheckChangeObject(GAMEDATA& gData)
 			gData.curObj = gData.nextObj;
 			gData.nextObj = (OBJS)(rand() % objQty + 1);
 			PlaceObjects(gData);
+			return true;
 		}
 		break;
 
@@ -935,6 +948,7 @@ void CheckChangeObject(GAMEDATA& gData)
 			gData.curObj = gData.nextObj;
 			gData.nextObj = (OBJS)(rand() % objQty + 1);
 			PlaceObjects(gData);
+			return true;
 		}
 		break;
 
@@ -944,6 +958,7 @@ void CheckChangeObject(GAMEDATA& gData)
 			gData.curObj = gData.nextObj;
 			gData.nextObj = (OBJS)(rand() % objQty + 1);
 			PlaceObjects(gData);
+			return true;
 		}
 		break;
 
@@ -953,6 +968,7 @@ void CheckChangeObject(GAMEDATA& gData)
 			gData.curObj = gData.nextObj;
 			gData.nextObj = (OBJS)(rand() % objQty + 1);
 			PlaceObjects(gData);
+			return true;
 		}
 		break;
 
@@ -962,6 +978,7 @@ void CheckChangeObject(GAMEDATA& gData)
 			gData.curObj = gData.nextObj;
 			gData.nextObj = (OBJS)(rand() % objQty + 1);
 			PlaceObjects(gData);
+			return true;
 		}
 		break;
 
@@ -971,6 +988,7 @@ void CheckChangeObject(GAMEDATA& gData)
 			gData.curObj = gData.nextObj;
 			gData.nextObj = (OBJS)(rand() % objQty + 1);
 			PlaceObjects(gData);
+			return true;
 		}
 		break;
 
@@ -980,12 +998,15 @@ void CheckChangeObject(GAMEDATA& gData)
 			gData.curObj = gData.nextObj;
 			gData.nextObj = (OBJS)(rand() % objQty + 1);
 			PlaceObjects(gData);
+			return true;
 		}
 		break;
 
 	default:
 		break;
 	}
+
+	return false;
 }
 
 void DrawBoard(GAMEDATA& gData)
@@ -1384,7 +1405,6 @@ void EndFill(GAMEDATA& gData)
 	SQUARE sqr[maxX][maxY];
 
 	ResetBoard(gData.board);
-	gData.curObj = OBJS::None;
 
 	PlaySound(TEXT("gameover.wav"), NULL, SND_ASYNC);
 
@@ -1397,6 +1417,8 @@ void EndFill(GAMEDATA& gData)
 			SetColor(sqr[x][y].color);
 			std::cout << "  ";
 		}
+		if (!_kbhit())
+			Sleep(animDelay);
 
 		for (int j = maxY - 1; j >= y; j--)
 		{
@@ -1408,6 +1430,8 @@ void EndFill(GAMEDATA& gData)
 				}
 			}
 		}
+		if (!_kbhit())
+			Sleep(animDelay);
 	}
 
 	SetColor(defColor);

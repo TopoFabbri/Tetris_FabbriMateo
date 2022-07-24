@@ -70,11 +70,11 @@ void ZLeft::RotationDown()
 
 void ZLeft::Kick()
 {
-	if (left.x >= maxX - 1 || downRight.x >= maxX - 1 || down.x >= maxX - 1)
+	if (left.x >= maxX || downRight.x >= maxX || down.x >= maxX)
 	{
 		MoveLeft();
 	}
-	else if (left.x <= 0 || downRight.x <= 0 || down.x <= 0)
+	else if (left.x < 0 || downRight.x < 0 || down.x < 0)
 	{
 		MoveRight();
 	}
@@ -234,7 +234,6 @@ void ZLeft::RotateRight()
 		rot = ROT::Up;
 
 	SetRotation();
-	Kick();
 }
 
 void ZLeft::RotateLeft()
@@ -245,7 +244,6 @@ void ZLeft::RotateLeft()
 		rot = ROT::Left;
 
 	SetRotation();
-	Kick();
 }
 
 void ZLeft::BurnOnBoard(CELL board[maxX][maxY])

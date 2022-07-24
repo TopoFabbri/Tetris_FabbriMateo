@@ -17,7 +17,6 @@
 #include <chrono>
 
 const int objQty = 7;
-const int timeBomb = 2000;
 
 enum class OBJS
 {
@@ -68,14 +67,12 @@ struct SQUARE
 	void Fall(CELL board[maxX][maxY])
 	{
 		CUR cur;
+		cur.gotoxy(ConLoc(pos));
+		SetColor(defColor);
+		std::cout << "  ";
+
 		for (int i = 0; i <= fallingSpeed; i++)
 		{
-			if (pos.y < maxY - 1 && board[pos.x][pos.y + 1].state == CELLSTATE::Empty)
-			{
-				cur.gotoxy(ConLoc(pos));
-				SetColor(defColor);
-				std::cout << "  ";
-			}
 			if (pos.y + 1 >= maxY || board[pos.x][pos.y + 1].state == CELLSTATE::Static)
 			{
 				board[pos.x][pos.y].state = CELLSTATE::Static;
@@ -86,13 +83,11 @@ struct SQUARE
 			{
 				pos.y++;
 			}
-			cur.gotoxy(ConLoc(pos));
-			SetColor(color);
-			std::cout << "  ";
-
-			if (!_kbhit())
-				std::this_thread::sleep_for(std::chrono::nanoseconds(925));
 		}
+
+		cur.gotoxy(ConLoc(pos));
+		SetColor(color);
+		std::cout << "  ";
 		fallingSpeed++;
 
 	}
@@ -134,7 +129,7 @@ void DrawControls(char input[]);
 void DrawKeys(int& line, std::string txt, char key);
 void DrawLine(GAMEDATA gData, int line);
 void ResetBoard(CELL board[maxX][maxY]);
-void CheckChangeObject(GAMEDATA& gData);
+bool CheckChangeObject(GAMEDATA& gData);
 void Play(char input[]);
 void PlaceObjects(GAMEDATA& gData);
 void SetNewSpeed(GAMEDATA& gData, TIME& gTime);
