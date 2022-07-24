@@ -33,7 +33,7 @@ struct TIME
 {
 	int init;
 	int elapsed;
-	int secsElapsed;
+	int secsElapsed = 0;
 	int speedUpTime = 10;
 	int counter = 0;
 	int pausedTime = 0;

@@ -5,6 +5,8 @@ void Play(char input[])
 	GAMEDATA gData;
 	TIME gTime;
 
+	PlaySound(TEXT("TetrisOST.wav"), NULL, SND_LOOP | SND_ASYNC);
+
 	system("cls");
 	ResetBoard(gData.board);
 	PlaceObjects(gData);
@@ -18,9 +20,9 @@ void Play(char input[])
 		DrawLevel(gData);
 		DrawBoard(gData);
 		CheckChangeObject(gData);
+		gData.lost = CheckLines(gData, gTime);
 		ExecuteInput(gData, input);
 		SetNewSpeed(gData, gTime);
-		gData.lost = CheckLines(gData, gTime);
 
 	} while (gData.inKey != input[(int)KEYS::Back] && !gData.lost);
 
@@ -998,7 +1000,7 @@ void DrawBoard(GAMEDATA& gData)
 
 	for (int y = 0; y < maxY; y++)
 	{
-		cursor.gotoxy({ boardIndent, y - 1});
+		cursor.gotoxy({ boardIndent, y - 1 });
 		DrawLine(gData, y);
 	}
 
@@ -1377,13 +1379,15 @@ void DrawOnBoard(std::string text, int score)
 
 void EndFill(GAMEDATA& gData)
 {
-	int animDelay = 1;
+	int animDelay = 15;
 	CUR cur;
 	SQUARE sqr[maxX][maxY];
 
 	ResetBoard(gData.board);
 	gData.curObj = OBJS::None;
 	DrawBoard(gData);
+
+	PlaySound(TEXT("gameover.wav"), NULL, SND_ASYNC);
 
 	for (int y = maxY - 1; y >= 0; y--)
 	{
@@ -1396,7 +1400,7 @@ void EndFill(GAMEDATA& gData)
 		}
 
 		if (!_kbhit())
-			Sleep(animDelay * 10);
+			Sleep(animDelay);
 
 		for (int j = maxY - 1; j >= y; j--)
 		{
@@ -1409,7 +1413,7 @@ void EndFill(GAMEDATA& gData)
 			}
 		}
 		if (!_kbhit())
-			Sleep(100 * animDelay);
+			Sleep(animDelay);
 	}
 
 	SetColor(defColor);
