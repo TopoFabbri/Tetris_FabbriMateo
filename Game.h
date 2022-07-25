@@ -9,12 +9,10 @@
 #include "ZLeft.h"
 #include "ZRight.h"
 #include <conio.h>
-#include <time.h>
+#include <ctime>
 #include <iostream>
 #include <string>
 #include <sstream>
-#include <thread>
-#include <chrono>
 
 const int objQty = 7;
 
@@ -32,8 +30,8 @@ enum class OBJS
 
 struct TIME
 {
-	int init;
-	int elapsed;
+	int init{};
+	int elapsed{};
 	int secsElapsed = 0;
 	int speedUpTime = 10;
 	int counter = 0;
@@ -54,8 +52,8 @@ struct OBJECTS
 
 struct SQUARE
 {
-	COORDS pos;
-	COLORS color;
+	COORDS pos{};
+	COLORS color{};
 	int fallingSpeed = 1;
 	bool inPlace = false;
 
@@ -66,7 +64,7 @@ struct SQUARE
 
 	void Fall(CELL board[maxX][maxY])
 	{
-		CUR cur;
+		CUR cur{};
 		cur.gotoxy(ConLoc(pos));
 		SetColor(defColor);
 		std::cout << "  ";
@@ -95,20 +93,21 @@ struct SQUARE
 
 struct GAMEDATA
 {
-	CELL board[maxX][maxY];
+	CELL board[maxX][maxY]{};
 	OBJECTS obj;
 	OBJS nextObj = (OBJS)(rand() % objQty + 1);
 	OBJS curObj = (OBJS)(rand() % objQty + 1);
-	bool lost;
-	char inKey;
+	bool lost{};
+	char inKey{};
 	int frames = 0;
 	int speed = 1;
 	int score = 0;
 	int timeLimit = 1000;
-	int collisionTime;
+	int collisionTime{};
 	bool collided = false;
 };
 
+void Play(char input[], GAMEDATA gData);
 KEYS GetKeys(GAMEDATA& gData, char input[]);
 bool CheckLines(GAMEDATA& gData, TIME& gTime);
 void FrameUpdate(GAMEDATA& gData, TIME& gTime);
@@ -130,7 +129,6 @@ void DrawKeys(int& line, std::string txt, char key);
 void DrawLine(GAMEDATA gData, int line);
 void ResetBoard(CELL board[maxX][maxY]);
 bool CheckChangeObject(GAMEDATA& gData);
-void Play(char input[]);
 void PlaceObjects(GAMEDATA& gData);
 void SetNewSpeed(GAMEDATA& gData, TIME& gTime);
 void CheckOverlaps(GAMEDATA& gData);

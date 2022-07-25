@@ -68,6 +68,18 @@ void LLeft::RotationDown()
 	down = { center.x - 1, center.y - 1 };
 }
 
+void LLeft::UnKick(CELL board[maxX][maxY])
+{
+	if ((left.x == maxX - 2 || corner.x == maxX - 2 || down.x == maxX - 2) && !RightColliding(board))
+	{
+		MoveRight();
+	}
+	else if ((left.x == 1 || corner.x == 1 || down.x == 1) && !LeftColliding(board))
+	{
+		MoveLeft();
+	}
+}
+
 void LLeft::Kick()
 {
 	if (left.x >= maxX || corner.x >= maxX || down.x >= maxX)
@@ -120,7 +132,7 @@ bool LLeft::RightColliding(CELL board[maxX][maxY])
 
 void LLeft::Draw()
 {
-	CUR cursor;
+	CUR cursor{};
 
 	SetColor(color);
 
@@ -142,9 +154,9 @@ void LLeft::Draw()
 
 void LLeft::DrawAsNext()
 {
-	COORDS pivotPos = { boardIndent + 16 + maxX, 3 };
+	const COORDS pivotPos = { boardIndent + 16 + maxX, 3 };
 	CUR cursor;
-	int cont = 2;
+	const int cont = 2;
 
 	SetColor(color);
 
@@ -234,6 +246,7 @@ void LLeft::RotateRight()
 		rot = ROT::Up;
 
 	SetRotation();
+	Kick();
 }
 
 void LLeft::RotateLeft()
@@ -244,6 +257,7 @@ void LLeft::RotateLeft()
 		rot = ROT::Left;
 
 	SetRotation();
+	Kick();
 }
 
 void LLeft::BurnOnBoard(CELL board[maxX][maxY])

@@ -20,6 +20,7 @@ private:
 	void RotationRight();
 	void RotationLeft();
 	void RotationDown();
+	void Kick();
 
 public:
 	bool current = false;
@@ -28,7 +29,7 @@ public:
 	bool LeftColliding(CELL board[maxX][maxY]);
 	bool RightColliding(CELL board[maxX][maxY]);
 	bool CheckOverlapedCell(CELL board[maxX][maxY]);
-	void Kick();
+	void UnKick(CELL board[maxX][maxY]);
 	void Draw();
 	void DrawAsNext();
 	void Place();

@@ -68,6 +68,18 @@ void T::RotationDown()
 	down = { center.x, center.y - 1 };
 }
 
+void T::UnKick(CELL board[maxX][maxY])
+{
+	if ((left.x == maxX - 2 || right.x == maxX - 2 || down.x == maxX - 2) && !RightColliding(board))
+	{
+		MoveRight();
+	}
+	else if ((left.x == 1 || right.x == 1 || down.x == 1) && !LeftColliding(board))
+	{
+		MoveLeft();
+	}
+}
+
 void T::Kick()
 {
 	if (left.x >= maxX || right.x >= maxX || down.x >= maxX)
@@ -234,6 +246,7 @@ void T::RotateRight()
 		rot = ROT::Up;
 
 	SetRotation();
+	Kick();
 }
 
 void T::RotateLeft()
@@ -244,6 +257,7 @@ void T::RotateLeft()
 		rot = ROT::Left;
 
 	SetRotation();
+	Kick();
 }
 
 void T::BurnOnBoard(CELL board[maxX][maxY])

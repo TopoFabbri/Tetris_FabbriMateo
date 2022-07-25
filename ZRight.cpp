@@ -68,6 +68,18 @@ void ZRight::RotationDown()
 	down = { center.x, center.y - 1 };
 }
 
+void ZRight::UnKick(CELL board[maxX][maxY])
+{
+	if ((downLeft.x == maxX - 2 || right.x == maxX - 2 || down.x == maxX - 2) && !RightColliding(board))
+	{
+		MoveRight();
+	}
+	else if ((downLeft.x == 1 || right.x == 1 || down.x == 1) && !LeftColliding(board))
+	{
+		MoveLeft();
+	}
+}
+
 void ZRight::Kick()
 {
 	if (downLeft.x >= maxX || right.x >= maxX || down.x >= maxX)
@@ -237,6 +249,7 @@ void ZRight::RotateRight()
 		rot = ROT::Up;
 
 	SetRotation();
+	Kick();
 }
 
 void ZRight::RotateLeft()
@@ -247,6 +260,7 @@ void ZRight::RotateLeft()
 		rot = ROT::Left;
 
 	SetRotation();
+	Kick();
 }
 
 void ZRight::BurnOnBoard(CELL board[maxX][maxY])

@@ -63,6 +63,6 @@ enum class MENUOPS
 
 void Menu();
 void Credits(char input[]);
-void Settings(char input[]);
+void Settings(char input[], GAMEDATA& gData);
 void SetKeys(char input[]);
 void CheckCollide(CREDS& creds, COORDS boardSize);

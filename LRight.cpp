@@ -68,6 +68,18 @@ void LRight::RotationDown()
 	down = { center.x + 1, center.y - 1 };
 }
 
+void LRight::UnKick(CELL board[maxX][maxY])
+{
+	if ((corner.x == maxX - 2 || right.x == maxX - 2 || down.x == maxX - 2) && !RightColliding(board))
+	{
+		MoveRight();
+	}
+	else if ((corner.x == 1 || right.x == 1 || down.x == 1) && !LeftColliding(board))
+	{
+		MoveLeft();
+	}
+}
+
 void LRight::Kick()
 {
 	if (corner.x >= maxX || right.x >= maxX || down.x >= maxX)
@@ -234,6 +246,7 @@ void LRight::RotateRight()
 		rot = ROT::Up;
 
 	SetRotation();
+	Kick();
 }
 
 void LRight::RotateLeft()
@@ -244,6 +257,7 @@ void LRight::RotateLeft()
 		rot = ROT::Left;
 
 	SetRotation();
+	Kick();
 }
 
 void LRight::BurnOnBoard(CELL board[maxX][maxY])

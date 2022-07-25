@@ -3,6 +3,7 @@
 void Menu()
 {
 	MENUOPS Nav = MENUOPS::Menu;
+	GAMEDATA gData{};
 
 	char input[20] = { 'w', 'a', 's', 'd', '1', '0', '4', '6', ' ' };
 	char buttonTxt[txtMaxLength][maxButtons]
@@ -22,7 +23,7 @@ void Menu()
 			break;
 
 		case MENUOPS::Play:
-			Play(input);
+			Play(input, gData);
 			Nav = MENUOPS::Menu;
 			break;
 
@@ -32,7 +33,7 @@ void Menu()
 			break;
 
 		case MENUOPS::Settings:
-			Settings(input);
+			Settings(input, gData);
 			Nav = MENUOPS::Menu;
 			break;
 
@@ -223,7 +224,7 @@ void CheckCollide(CREDS& creds, COORDS boardSize)
 	}
 }
 
-void Settings(char input[])
+void Settings(char input[], GAMEDATA& gData)
 {
 	system("cls");
 

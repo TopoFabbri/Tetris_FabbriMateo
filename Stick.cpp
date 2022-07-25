@@ -68,6 +68,18 @@ void Stick::RotationDown()
 	right = { centerLeft.x - 2, centerLeft.y };
 }
 
+void Stick::UnKick(CELL board[maxX][maxY])
+{
+	if ((left.x == maxX - 2 || right.x == maxX - 2 || centerRight.x == maxX - 2) && !RightColliding(board))
+	{
+		MoveRight();
+	}
+	else if ((left.x == 1 || right.x == 1 || centerRight.x == 1) && !LeftColliding(board))
+	{
+		MoveLeft();
+	}
+}
+
 void Stick::Kick()
 {
 	if (left.x >= maxX || right.x >= maxX || centerRight.x >= maxX)
@@ -79,7 +91,7 @@ void Stick::Kick()
 		MoveRight();
 	}
 
-	if (left.x > maxX || right.x > maxX || centerRight.x > maxX)
+	if (left.x >= maxX || right.x >= maxX || centerRight.x >= maxX)
 	{
 		MoveLeft();
 	}
@@ -243,6 +255,7 @@ void Stick::RotateRight()
 		rot = ROT::Up;
 
 	SetRotation();
+	Kick();
 }
 
 void Stick::RotateLeft()
@@ -253,6 +266,7 @@ void Stick::RotateLeft()
 		rot = ROT::Left;
 
 	SetRotation();
+	Kick();
 }
 
 void Stick::BurnOnBoard(CELL board[maxX][maxY])

@@ -20,11 +20,12 @@ private:
 	void RotationRight();
 	void RotationLeft();
 	void RotationDown();
+	void Kick();
 
 public:
 	bool current = false;
 
-	void Kick();
+	void UnKick(CELL board[maxX][maxY]);
 	bool DownColliding(CELL board[maxX][maxY]);
 	bool LeftColliding(CELL board[maxX][maxY]);
 	bool RightColliding(CELL board[maxX][maxY]);
