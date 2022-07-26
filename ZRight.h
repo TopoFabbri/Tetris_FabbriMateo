@@ -26,6 +26,8 @@ private:
 
 public:
 	bool current = false;
+	int lHalf = sqr;
+	int rHalf = sqr;
 
 	bool DownColliding(CELL board[maxX][maxY]);
 	bool LeftColliding(CELL board[maxX][maxY]);

@@ -130,6 +130,7 @@ struct CELL
 {
 	CELLSTATE state = CELLSTATE::Empty;
 	COLORS color = defColor;
+	char skin[2]{ ' ', ' ' };
 };
 
 const COORDS initPiecePos{ 5, 1 };

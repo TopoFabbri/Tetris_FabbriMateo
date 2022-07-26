@@ -14,6 +14,8 @@
 #include <string>
 #include <sstream>
 
+#pragma comment (lib, "winmm")
+
 const int objQty = 7;
 
 enum class OBJS
@@ -42,7 +44,7 @@ struct TIME
 struct OBJECTS
 {
 	T t;
-	Square SQUARE;
+	Square square;
 	Stick stick;
 	LLeft lLeft;
 	LRight lRight;

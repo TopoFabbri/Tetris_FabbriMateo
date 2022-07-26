@@ -137,16 +137,16 @@ void T::Draw()
 	SetColor(color);
 
 	cursor.gotoxy(ConLoc(center));
-	std::cout << sqr << sqr;
+	std::cout << (char)lHalf << (char)rHalf;
 
 	cursor.gotoxy(ConLoc(left));
-	std::cout << sqr << sqr;
+	std::cout << (char)lHalf << (char)rHalf;
 
 	cursor.gotoxy(ConLoc(right));
-	std::cout << sqr << sqr;
+	std::cout << (char)lHalf << (char)rHalf;
 
 	cursor.gotoxy(ConLoc(down));
-	std::cout << sqr << sqr;
+	std::cout << (char)lHalf << (char)rHalf;
 
 	SetColor(defColor);
 	cursor.gotoxy(txtPos);
@@ -161,16 +161,16 @@ void T::DrawAsNext()
 	SetColor(color);
 
 	cursor.gotoxy(pivotPos);
-	std::cout << sqr << sqr;
+	std::cout << (char)lHalf << (char)rHalf;
 
 	cursor.gotoxy({ pivotPos.x - cont, pivotPos.y });
-	std::cout << sqr << sqr;
+	std::cout << (char)lHalf << (char)rHalf;
 
 	cursor.gotoxy({ pivotPos.x + cont, pivotPos.y });
-	std::cout << sqr << sqr;
+	std::cout << (char)lHalf << (char)rHalf;
 
 	cursor.gotoxy({ pivotPos.x, pivotPos.y + 1 });
-	std::cout << sqr << sqr;
+	std::cout << (char)lHalf << (char)rHalf;
 
 	SetColor(defColor);
 	cursor.gotoxy(txtPos);
@@ -191,17 +191,25 @@ void T::Place()
 
 void T::QuitFalling(CELL board[maxX][maxY])
 {
-	board[center.x][center.y].color = color;
 	board[center.x][center.y].state = CELLSTATE::Static;
+	board[center.x][center.y].color = color;
+	board[center.x][center.y].skin[0] = lHalf;
+	board[center.x][center.y].skin[1] = rHalf;
 
-	board[left.x][left.y].color = color;
 	board[left.x][left.y].state = CELLSTATE::Static;
+	board[left.x][left.y].color = color;
+	board[left.x][left.y].skin[0] = lHalf;
+	board[left.x][left.y].skin[1] = rHalf;
 
-	board[right.x][right.y].color = color;
 	board[right.x][right.y].state = CELLSTATE::Static;
+	board[right.x][right.y].color = color;
+	board[right.x][right.y].skin[0] = lHalf;
+	board[right.x][right.y].skin[1] = rHalf;
 
-	board[down.x][down.y].color = color;
 	board[down.x][down.y].state = CELLSTATE::Static;
+	board[down.x][down.y].color = color;
+	board[down.x][down.y].skin[0] = lHalf;
+	board[down.x][down.y].skin[1] = rHalf;
 
 	current = false;
 }
@@ -264,28 +272,44 @@ void T::BurnOnBoard(CELL board[maxX][maxY])
 {
 	board[center.x][center.y].state = CELLSTATE::Moving;
 	board[center.x][center.y].color = color;
+	board[center.x][center.y].skin[0] = lHalf;
+	board[center.x][center.y].skin[1] = rHalf;
 
 	board[left.x][left.y].state = CELLSTATE::Moving;
 	board[left.x][left.y].color = color;
+	board[left.x][left.y].skin[0] = lHalf;
+	board[left.x][left.y].skin[1] = rHalf;
 
 	board[right.x][right.y].state = CELLSTATE::Moving;
 	board[right.x][right.y].color = color;
+	board[right.x][right.y].skin[0] = lHalf;
+	board[right.x][right.y].skin[1] = rHalf;
 
 	board[down.x][down.y].state = CELLSTATE::Moving;
 	board[down.x][down.y].color = color;
+	board[down.x][down.y].skin[0] = lHalf;
+	board[down.x][down.y].skin[1] = rHalf;
 }
 
 void T::EraseFromBoard(CELL board[maxX][maxY])
 {
 	board[center.x][center.y].state = CELLSTATE::Empty;
 	board[center.x][center.y].color = defColor;
+	board[center.x][center.y].skin[0] = sqr;
+	board[center.x][center.y].skin[1] = sqr;
 
 	board[left.x][left.y].state = CELLSTATE::Empty;
 	board[left.x][left.y].color = defColor;
+	board[left.x][left.y].skin[0] = sqr;
+	board[left.x][left.y].skin[1] = sqr;
 
 	board[right.x][right.y].state = CELLSTATE::Empty;
 	board[right.x][right.y].color = defColor;
+	board[right.x][right.y].skin[0] = sqr;
+	board[right.x][right.y].skin[1] = sqr;
 
 	board[down.x][down.y].state = CELLSTATE::Empty;
 	board[down.x][down.y].color = defColor;
+	board[down.x][down.y].skin[0] = sqr;
+	board[down.x][down.y].skin[1] = sqr;
 }

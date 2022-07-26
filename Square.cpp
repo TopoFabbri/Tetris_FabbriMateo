@@ -58,17 +58,25 @@ void Square::Place()
 
 void Square::QuitFalling(CELL board[maxX][maxY])
 {
-	board[upLeft.x][upLeft.y].color = color;
 	board[upLeft.x][upLeft.y].state = CELLSTATE::Static;
+	board[upLeft.x][upLeft.y].color = color;
+	board[upLeft.x][upLeft.y].skin[0] = lHalf;
+	board[upLeft.x][upLeft.y].skin[1] = rHalf;
 
-	board[upRight.x][upRight.y].color = color;
 	board[upRight.x][upRight.y].state = CELLSTATE::Static;
+	board[upRight.x][upRight.y].color = color;
+	board[upRight.x][upRight.y].skin[0] = lHalf;
+	board[upRight.x][upRight.y].skin[1] = rHalf;
 
-	board[lowLeft.x][lowLeft.y].color = color;
 	board[lowLeft.x][lowLeft.y].state = CELLSTATE::Static;
+	board[lowLeft.x][lowLeft.y].color = color;
+	board[lowLeft.x][lowLeft.y].skin[0] = lHalf;
+	board[lowLeft.x][lowLeft.y].skin[1] = rHalf;
 
-	board[lowRight.x][lowRight.y].color = color;
 	board[lowRight.x][lowRight.y].state = CELLSTATE::Static;
+	board[lowRight.x][lowRight.y].color = color;
+	board[lowRight.x][lowRight.y].skin[0] = lHalf;
+	board[lowRight.x][lowRight.y].skin[1] = rHalf;
 
 	current = false;
 }
@@ -80,16 +88,16 @@ void Square::Draw()
 	SetColor(color);
 
 	cursor.gotoxy(ConLoc(upLeft));
-	std::cout << sqr << sqr;
+	std::cout << (char)lHalf << (char)rHalf;
 
 	cursor.gotoxy(ConLoc(upRight));
-	std::cout << sqr << sqr;
+	std::cout << (char)lHalf << (char)rHalf;
 
 	cursor.gotoxy(ConLoc(lowLeft));
-	std::cout << sqr << sqr;
+	std::cout << (char)lHalf << (char)rHalf;
 
 	cursor.gotoxy(ConLoc(lowRight));
-	std::cout << sqr << sqr;
+	std::cout << (char)lHalf << (char)rHalf;
 
 	SetColor(defColor);
 	cursor.gotoxy(txtPos);
@@ -104,16 +112,16 @@ void Square::DrawAsNext()
 	SetColor(color);
 
 	cursor.gotoxy(pivotPos);
-	std::cout << sqr << sqr;
+	std::cout << (char)lHalf << (char)rHalf;
 
 	cursor.gotoxy({ pivotPos.x + cont, pivotPos.y });
-	std::cout << sqr << sqr;
+	std::cout << (char)lHalf << (char)rHalf;
 
 	cursor.gotoxy({ pivotPos.x, pivotPos.y + 1 });
-	std::cout << sqr << sqr;
+	std::cout << (char)lHalf << (char)rHalf;
 
 	cursor.gotoxy({ pivotPos.x + cont, pivotPos.y + 1 });
-	std::cout << sqr << sqr;
+	std::cout << (char)lHalf << (char)rHalf;
 
 	SetColor(defColor);
 	cursor.gotoxy(txtPos);
@@ -147,28 +155,45 @@ void Square::BurnOnBoard(CELL board[maxX][maxY])
 {
 	board[upLeft.x][upLeft.y].state = CELLSTATE::Moving;
 	board[upLeft.x][upLeft.y].color = color;
+	board[upLeft.x][upLeft.y].skin[0] = lHalf;
+	board[upLeft.x][upLeft.y].skin[1] = rHalf;
 
 	board[upRight.x][upRight.y].state = CELLSTATE::Moving;
 	board[upRight.x][upRight.y].color = color;
+	board[upRight.x][upRight.y].skin[0] = lHalf;
+	board[upRight.x][upRight.y].skin[1] = rHalf;
 
 	board[lowLeft.x][lowLeft.y].state = CELLSTATE::Moving;
 	board[lowLeft.x][lowLeft.y].color = color;
+	board[lowLeft.x][lowLeft.y].skin[0] = lHalf;
+	board[lowLeft.x][lowLeft.y].skin[1] = rHalf;
 
 	board[lowRight.x][lowRight.y].state = CELLSTATE::Moving;
 	board[lowRight.x][lowRight.y].color = color;
+	board[lowRight.x][lowRight.y].skin[0] = lHalf;
+	board[lowRight.x][lowRight.y].skin[1] = rHalf;
 }
 
 void Square::EraseFromBoard(CELL board[maxX][maxY])
 {
 	board[upLeft.x][upLeft.y].state = CELLSTATE::Empty;
 	board[upLeft.x][upLeft.y].color = defColor;
+	board[upLeft.x][upLeft.y].skin[0] = sqr;
+	board[upLeft.x][upLeft.y].skin[1] = sqr;
 
 	board[upRight.x][upRight.y].state = CELLSTATE::Empty;
 	board[upRight.x][upRight.y].color = defColor;
+	board[upRight.x][upRight.y].skin[0] = sqr;
+	board[upRight.x][upRight.y].skin[1] = sqr;
+
 
 	board[lowLeft.x][lowLeft.y].state = CELLSTATE::Empty;
 	board[lowLeft.x][lowLeft.y].color = defColor;
+	board[lowLeft.x][lowLeft.y].skin[0] = sqr;
+	board[lowLeft.x][lowLeft.y].skin[1] = sqr;
 
 	board[lowRight.x][lowRight.y].state = CELLSTATE::Empty;
 	board[lowRight.x][lowRight.y].color = defColor;
+	board[lowRight.x][lowRight.y].skin[0] = sqr;
+	board[lowRight.x][lowRight.y].skin[1] = sqr;
 }

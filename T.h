@@ -24,6 +24,8 @@ private:
 
 public:
 	bool current = false;
+	int lHalf = sqr;
+	int rHalf = sqr;
 
 	void UnKick(CELL board[maxX][maxY]);
 	bool DownColliding(CELL board[maxX][maxY]);

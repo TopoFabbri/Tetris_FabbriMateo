@@ -146,16 +146,16 @@ void Stick::Draw()
 	SetColor(color);
 
 	cursor.gotoxy(ConLoc(centerLeft));
-	std::cout << sqr << sqr;
+	std::cout << (char)lHalf << (char)rHalf;
 
 	cursor.gotoxy(ConLoc(left));
-	std::cout << sqr << sqr;
+	std::cout << (char)lHalf << (char)rHalf;
 
 	cursor.gotoxy(ConLoc(right));
-	std::cout << sqr << sqr;
+	std::cout << (char)lHalf << (char)rHalf;
 
 	cursor.gotoxy(ConLoc(centerRight));
-	std::cout << sqr << sqr;
+	std::cout << (char)lHalf << (char)rHalf;
 
 	SetColor(defColor);
 	cursor.gotoxy(txtPos);
@@ -170,16 +170,16 @@ void Stick::DrawAsNext()
 	SetColor(color);
 
 	cursor.gotoxy(pivotPos);
-	std::cout << sqr << sqr;
+	std::cout << (char)lHalf << (char)rHalf;
 
 	cursor.gotoxy({ pivotPos.x - cont, pivotPos.y });
-	std::cout << sqr << sqr;
+	std::cout << (char)lHalf << (char)rHalf;
 
 	cursor.gotoxy({ pivotPos.x + cont * 2, pivotPos.y });
-	std::cout << sqr << sqr;
+	std::cout << (char)lHalf << (char)rHalf;
 
 	cursor.gotoxy({ pivotPos.x + cont, pivotPos.y });
-	std::cout << sqr << sqr;
+	std::cout << (char)lHalf << (char)rHalf;
 
 	SetColor(defColor);
 	cursor.gotoxy(txtPos);
@@ -200,17 +200,25 @@ void Stick::Place()
 
 void Stick::QuitFalling(CELL board[maxX][maxY])
 {
-	board[centerLeft.x][centerLeft.y].color = color;
 	board[centerLeft.x][centerLeft.y].state = CELLSTATE::Static;
+	board[centerLeft.x][centerLeft.y].color = color;
+	board[centerLeft.x][centerLeft.y].skin[0] = lHalf;
+	board[centerLeft.x][centerLeft.y].skin[1] = rHalf;
 
-	board[left.x][left.y].color = color;
 	board[left.x][left.y].state = CELLSTATE::Static;
+	board[left.x][left.y].color = color;
+	board[left.x][left.y].skin[0] = lHalf;
+	board[left.x][left.y].skin[1] = rHalf;
 
-	board[right.x][right.y].color = color;
-	board[right.x][right.y].state = CELLSTATE::Static;
-
-	board[centerRight.x][centerRight.y].color = color;
 	board[centerRight.x][centerRight.y].state = CELLSTATE::Static;
+	board[centerRight.x][centerRight.y].color = color;
+	board[centerRight.x][centerRight.y].skin[0] = lHalf;
+	board[centerRight.x][centerRight.y].skin[1] = rHalf;
+
+	board[right.x][right.y].state = CELLSTATE::Static;
+	board[right.x][right.y].color = color;
+	board[right.x][right.y].skin[0] = lHalf;
+	board[right.x][right.y].skin[1] = rHalf;
 
 	current = false;
 }
@@ -273,28 +281,44 @@ void Stick::BurnOnBoard(CELL board[maxX][maxY])
 {
 	board[centerLeft.x][centerLeft.y].state = CELLSTATE::Moving;
 	board[centerLeft.x][centerLeft.y].color = color;
+	board[centerLeft.x][centerLeft.y].skin[0] = lHalf;
+	board[centerLeft.x][centerLeft.y].skin[1] = rHalf;
 
 	board[left.x][left.y].state = CELLSTATE::Moving;
 	board[left.x][left.y].color = color;
+	board[left.x][left.y].skin[0] = lHalf;
+	board[left.x][left.y].skin[1] = rHalf;
 
 	board[centerRight.x][centerRight.y].state = CELLSTATE::Moving;
 	board[centerRight.x][centerRight.y].color = color;
+	board[centerRight.x][centerRight.y].skin[0] = lHalf;
+	board[centerRight.x][centerRight.y].skin[1] = rHalf;
 
 	board[right.x][right.y].state = CELLSTATE::Moving;
 	board[right.x][right.y].color = color;
+	board[right.x][right.y].skin[0] = lHalf;
+	board[right.x][right.y].skin[1] = rHalf;
 }
 
 void Stick::EraseFromBoard(CELL board[maxX][maxY])
 {
 	board[centerLeft.x][centerLeft.y].state = CELLSTATE::Empty;
 	board[centerLeft.x][centerLeft.y].color = defColor;
+	board[right.x][right.y].skin[0] = sqr;
+	board[right.x][right.y].skin[1] = sqr;
 
 	board[left.x][left.y].state = CELLSTATE::Empty;
 	board[left.x][left.y].color = defColor;
+	board[right.x][right.y].skin[0] = sqr;
+	board[right.x][right.y].skin[1] = sqr;
 
 	board[centerRight.x][centerRight.y].state = CELLSTATE::Empty;
 	board[centerRight.x][centerRight.y].color = defColor;
+	board[right.x][right.y].skin[0] = sqr;
+	board[right.x][right.y].skin[1] = sqr;
 
 	board[right.x][right.y].state = CELLSTATE::Empty;
 	board[right.x][right.y].color = defColor;
+	board[right.x][right.y].skin[0] = sqr;
+	board[right.x][right.y].skin[1] = sqr;
 }

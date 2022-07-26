@@ -245,11 +245,11 @@ void FallObject(GAMEDATA& gData)
 			break;
 
 		case OBJS::Square:
-			if (!gData.obj.SQUARE.DownColliding(gData.board))
+			if (!gData.obj.square.DownColliding(gData.board))
 			{
-				gData.obj.SQUARE.EraseFromBoard(gData.board);
-				gData.obj.SQUARE.FallOne();
-				gData.obj.SQUARE.BurnOnBoard(gData.board);
+				gData.obj.square.EraseFromBoard(gData.board);
+				gData.obj.square.FallOne();
+				gData.obj.square.BurnOnBoard(gData.board);
 			}
 			else
 			{
@@ -352,11 +352,11 @@ void MoveObjectLeft(GAMEDATA& gData)
 		break;
 
 	case OBJS::Square:
-		if (!gData.obj.SQUARE.LeftColliding(gData.board))
+		if (!gData.obj.square.LeftColliding(gData.board))
 		{
-			gData.obj.SQUARE.EraseFromBoard(gData.board);
-			gData.obj.SQUARE.MoveLeft();
-			gData.obj.SQUARE.BurnOnBoard(gData.board);
+			gData.obj.square.EraseFromBoard(gData.board);
+			gData.obj.square.MoveLeft();
+			gData.obj.square.BurnOnBoard(gData.board);
 
 		}
 		break;
@@ -434,11 +434,11 @@ void MoveObjectRight(GAMEDATA& gData)
 		break;
 
 	case OBJS::Square:
-		if (!gData.obj.SQUARE.RightColliding(gData.board))
+		if (!gData.obj.square.RightColliding(gData.board))
 		{
-			gData.obj.SQUARE.EraseFromBoard(gData.board);
-			gData.obj.SQUARE.MoveRight();
-			gData.obj.SQUARE.BurnOnBoard(gData.board);
+			gData.obj.square.EraseFromBoard(gData.board);
+			gData.obj.square.MoveRight();
+			gData.obj.square.BurnOnBoard(gData.board);
 
 		}
 		break;
@@ -703,10 +703,10 @@ void DropDown(GAMEDATA& gData)
 	case OBJS::Square:
 		for (int i = 0; i < maxY; i++)
 		{
-			if (!gData.obj.SQUARE.DownColliding(gData.board))
+			if (!gData.obj.square.DownColliding(gData.board))
 			{
-				gData.obj.SQUARE.EraseFromBoard(gData.board);
-				gData.obj.SQUARE.FallOne();
+				gData.obj.square.EraseFromBoard(gData.board);
+				gData.obj.square.FallOne();
 			}
 		}
 		break;
@@ -785,7 +785,7 @@ void DrawObject(GAMEDATA gData)
 		break;
 
 	case OBJS::Square:
-		gData.obj.SQUARE.Draw();
+		gData.obj.square.Draw();
 		break;
 
 	case OBJS::Stick:
@@ -836,7 +836,7 @@ void DrawNextObject(GAMEDATA gData)
 		break;
 
 	case OBJS::Square:
-		gData.obj.SQUARE.DrawAsNext();
+		gData.obj.square.DrawAsNext();
 		break;
 
 	case OBJS::Stick:
@@ -972,7 +972,7 @@ bool CheckChangeObject(GAMEDATA& gData)
 		break;
 
 	case OBJS::Square:
-		if (gData.obj.SQUARE.DownColliding(gData.board))
+		if (gData.obj.square.DownColliding(gData.board))
 		{
 			gData.curObj = gData.nextObj;
 			gData.nextObj = (OBJS)(rand() % objQty + 1);
@@ -1125,9 +1125,9 @@ void DrawLine(GAMEDATA gData, int line)
 		SetColor(gData.board[x][line].color);
 
 		if (gData.board[x][line].state == CELLSTATE::Empty)
-			std::cout << "  ";
+			std::cout << gData.board[x][line].skin[0] << gData.board[x][line].skin[1];
 		else
-			std::cout << sqr << sqr;
+			std::cout << gData.board[x][line].skin[0] << gData.board[x][line].skin[1];
 
 		SetColor(defColor);
 	}
@@ -1174,6 +1174,8 @@ void ResetBoard(CELL board[maxX][maxY])
 		{
 			board[x][y].color = defColor;
 			board[x][y].state = CELLSTATE::Empty;
+			board[x][y].skin[0] = ' ';
+			board[x][y].skin[1] = ' ';
 		}
 	}
 }
@@ -1190,7 +1192,7 @@ void PlaceObjects(GAMEDATA& gData)
 		break;
 
 	case OBJS::Square:
-		gData.obj.SQUARE.Place();
+		gData.obj.square.Place();
 		break;
 
 	case OBJS::Stick:

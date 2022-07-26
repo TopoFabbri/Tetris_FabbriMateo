@@ -3,7 +3,6 @@
 #include "ConioMenus.h"
 #include "Globals.h"
 #include "Game.h"
-#include <time.h>
 
 struct CREDS
 {
@@ -64,5 +63,7 @@ enum class MENUOPS
 void Menu();
 void Credits(char input[]);
 void Settings(char input[], GAMEDATA& gData);
+void ChangeSkinsMenu(GAMEDATA& gData, char input[]);
+void ChangeSkin(GAMEDATA& gData, char input[]);
 void SetKeys(char input[]);
 void CheckCollide(CREDS& creds, COORDS boardSize);
