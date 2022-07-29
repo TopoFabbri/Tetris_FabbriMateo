@@ -78,6 +78,15 @@ void Stick::UnKick(CELL board[maxX][maxY])
 	{
 		MoveLeft();
 	}
+
+	if ((left.x == maxX - 2 || right.x == maxX - 2 || centerRight.x == maxX - 2) && !RightColliding(board))
+	{
+		MoveRight();
+	}
+	else if ((left.x == 1 || right.x == 1 || centerRight.x == 1) && !LeftColliding(board))
+	{
+		MoveLeft();
+	}
 }
 
 void Stick::Kick()

@@ -100,6 +100,7 @@ struct GAMEDATA
 	OBJS nextObj = (OBJS)(rand() % objQty + 1);
 	OBJS curObj = (OBJS)(rand() % objQty + 1);
 	bool lost{};
+	bool music = true;
 	char inKey{};
 	int frames = 0;
 	int speed = 1;
@@ -115,7 +116,7 @@ bool CheckLines(GAMEDATA& gData, TIME& gTime);
 void FrameUpdate(GAMEDATA& gData, TIME& gTime);
 void ExecuteInput(GAMEDATA& gData, char input[]);
 void DestroyLine(GAMEDATA& gData, int line, TIME& gTime);
-COLORS GetOpposite(COLORS color);
+COLORS GetOppositeColor(int color);
 void FallObject(GAMEDATA& gData);
 void RotateObjectLeft(GAMEDATA& gData);
 void RotateObjectRight(GAMEDATA& gData);

@@ -127,7 +127,7 @@ void DestroyLine(GAMEDATA& gData, int line, TIME& gTime)
 
 	for (int x = 0; x < maxX; x++)
 	{
-		gData.board[x][line].color = GetOpposite(gData.board[x][line].color);
+		gData.board[x][line].color = GetOppositeColor(gData.board[x][line].color);
 		gData.board[x][line].state = CELLSTATE::Empty;
 	}
 	DrawLine(gData, line);
@@ -135,7 +135,7 @@ void DestroyLine(GAMEDATA& gData, int line, TIME& gTime)
 
 	for (int x = 0; x < maxX; x++)
 	{
-		gData.board[x][line].color = GetOpposite(gData.board[x][line].color);
+		gData.board[x][line].color = GetOppositeColor(gData.board[x][line].color);
 	}
 	DrawLine(gData, line);
 	Beep(1000, 100);
@@ -158,6 +158,8 @@ void DestroyLine(GAMEDATA& gData, int line, TIME& gTime)
 		for (int x = 0; x < maxX; x++)
 		{
 			gData.board[x][y].color = gData.board[x][y - 1].color;
+			gData.board[x][y].skin[0] = gData.board[x][y - 1].skin[0];
+			gData.board[x][y].skin[1] = gData.board[x][y - 1].skin[1];
 			gData.board[x][y].state = gData.board[x][y - 1].state;
 		}
 
@@ -167,7 +169,7 @@ void DestroyLine(GAMEDATA& gData, int line, TIME& gTime)
 	gTime.pausedTime += clock() - gTime.pausedStartTime;
 }
 
-COLORS GetOpposite(COLORS color)
+COLORS GetOppositeColor(int color)
 {
 	switch (color)
 	{

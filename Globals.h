@@ -129,7 +129,7 @@ const COLORS defColor = WhiteOnBlack;
 struct CELL
 {
 	CELLSTATE state = CELLSTATE::Empty;
-	COLORS color = defColor;
+	int color = defColor;
 	char skin[2]{ ' ', ' ' };
 };
 
@@ -140,7 +140,7 @@ const COORDS pos0{ 0, 0 };
 COORDS ConLoc(COORDS boardLoc);
 void DrawBox(COORDS size, COORDS pos, bool fill);
 void DrawBox(COORDS size, COORDS pos, bool fill, std::string title);
-void SetColor(COLORS color);
+void SetColor(int color);
 void hidecursor();
 COLORS GetRandomColor();
 void SetFontSize(int size);

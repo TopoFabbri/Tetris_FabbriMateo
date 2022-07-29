@@ -192,6 +192,7 @@ void LRight::Place()
 void LRight::QuitFalling(CELL board[maxX][maxY])
 {
 	board[center.x][center.y].state = CELLSTATE::Static;
+	board[center.x][center.y].color = color;
 	board[center.x][center.y].skin[0] = lHalf;
 	board[center.x][center.y].skin[1] = rHalf;
 

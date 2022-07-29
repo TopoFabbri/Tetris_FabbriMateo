@@ -140,7 +140,7 @@ void DrawBox(COORDS size, COORDS pos, bool fill, std::string title)
 	pos.y++;
 }
 
-void SetColor(COLORS color)
+void SetColor(int color)
 {
     SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
 }

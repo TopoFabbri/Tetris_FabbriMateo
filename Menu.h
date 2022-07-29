@@ -63,6 +63,7 @@ enum class MENUOPS
 void Menu();
 void Credits(char input[]);
 void Settings(char input[], GAMEDATA& gData);
+void PrintSettings(GAMEDATA& gData);
 void ChangeSkinsMenu(GAMEDATA& gData, char input[]);
 void ChangeSkin(GAMEDATA& gData, char input[]);
 void SetKeys(char input[]);

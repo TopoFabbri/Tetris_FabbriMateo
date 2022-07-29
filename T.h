@@ -9,7 +9,6 @@ private:
 	COORDS left{ center.x - 1, center.y };
 	COORDS right{ center.x + 1, center.y };
 	COORDS down{ center.x, center.y + 1 };
-	COLORS color = BlackOnPurple;
 	ROT rot = ROT::Up;
 
 	bool DownCollideCell(CELL board[maxX][maxY], COORDS cell);
@@ -23,6 +22,7 @@ private:
 	void Kick();
 
 public:
+	int color = BlackOnPurple;
 	bool current = false;
 	int lHalf = sqr;
 	int rHalf = sqr;

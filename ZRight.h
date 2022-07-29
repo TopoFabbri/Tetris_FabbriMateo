@@ -9,7 +9,6 @@ private:
 	COORDS downLeft{ center.x - 1, center.y + 1 };
 	COORDS right{ center.x + 1, center.y };
 	COORDS down{ center.x, center.y + 1 };
-	COLORS color = BlackOnGreen;
 	ROT rot = ROT::Up;
 	int collideTime;
 	int extraTime = 0;
@@ -25,6 +24,7 @@ private:
 	void Kick();
 
 public:
+	int color = BlackOnGreen;
 	bool current = false;
 	int lHalf = sqr;
 	int rHalf = sqr;

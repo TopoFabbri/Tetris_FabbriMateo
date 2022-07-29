@@ -13,6 +13,8 @@ void Menu()
 		{' ', 'S', 'E', 'T', 'T', 'I', 'N', 'G', 'S', ' '},
 	};
 
+	PlaySound(TEXT("MosEisleyCantina.wav"), nullptr, SND_LOOP | SND_ASYNC);
+
 	int selector = 0;
 
 	do
@@ -232,20 +234,50 @@ void Settings(char input[], GAMEDATA& gData)
 	{
 		{' ', ' ', ' ', 'K', 'E', 'Y', 'S', ' ', ' ', ' '},
 		{' ', ' ', ' ', 'S', 'K', 'I', 'N', ' ', ' ', ' '},
+		{' ', ' ', 'M', 'U', 'S', 'I', 'C', ' ', ' ', ' '},
 	};
 	int selector;
 
 	do
 	{
 		PrintTitle("SETTINGS");
-		MenuNavigator(2, btnTxt, input, selector);
+		PrintSettings(gData);
+		MenuNavigator(3, btnTxt, input, selector);
 
 		if (selector == 1)
+		{
 			SetKeys(input);
+		}
 		else if (selector == 2)
+		{
 			ChangeSkinsMenu(gData, input);
+		}
+		else if (selector == 3)
+		{
+			gData.music = !gData.music;
+
+			if (gData.music)
+				PlaySound(TEXT("MosEisleyCantina.wav"), nullptr, SND_LOOP | SND_ASYNC);
+			else
+				PlaySound(NULL, nullptr, SND_ASYNC);
+		}
 
 	} while (selector != 0);
+}
+
+void PrintSettings(GAMEDATA& gData)
+{
+	CUR cur;
+	COORDS loc = { 2, 5 };
+
+	cur.gotoxy(loc);
+	SetColor(defColor);
+
+	std::cout << "Music: ";
+	SetColor(gData.music ? GreenOnBlack : RedOnBlack);
+	std::cout << (gData.music ? "ON " : "OFF");
+
+	SetColor(defColor);
 }
 
 void ChangeSkinsMenu(GAMEDATA& gData, char input[])
@@ -309,6 +341,7 @@ void ChangeSkin(GAMEDATA& gData, char input[])
 	{
 		{' ', ' ', ' ', 'L', 'E', 'F', 'T', ' ', ' ', ' '},
 		{' ', ' ', 'R', 'I', 'G', 'H', 'T', ' ', ' ', ' '},
+		{' ', ' ', 'C', 'O', 'L', 'O', 'R', ' ', ' ', ' '},
 	};
 	int selector = 1;
 
@@ -316,16 +349,145 @@ void ChangeSkin(GAMEDATA& gData, char input[])
 	{
 		system("cls");
 
-		MenuNavigator(2, btnTxt, input, selector);
+		MenuNavigator(3, btnTxt, input, selector);
 
 		if (selector == 1)
+		{
 			left = true;
+		}
 		else if (selector == 2)
+		{
 			left = false;
+		}
+		else if (selector == 3)
+		{
+			system("cls");
+
+			std::cout << "Select a color" << std::endl << std::endl
+				<< input[(int)KEYS::Left] << ": Show previous" << std::endl
+				<< input[(int)KEYS::Right] << ": Show next" << std::endl << std::endl
+				<< input[(int)KEYS::Back] << ": Back" << std::endl;
+
+			do
+			{
+				in = ' ';
+				if (_kbhit())
+					in = _getch();
+
+				DrawObject(gData);
+
+				switch (gData.curObj)
+				{
+				case OBJS::None:
+					break;
+
+				case OBJS::T:
+					if (in == input[(int)KEYS::Left])
+						gData.obj.t.color -= 16;
+					else if (in == input[(int)KEYS::Right])
+						gData.obj.t.color += 16;
+
+					if (gData.obj.t.color < 0)
+						gData.obj.t.color = 240;
+					else if (gData.obj.t.color > 240)
+						gData.obj.t.color = 0;
+
+					break;
+
+				case OBJS::Square:
+					if (in == input[(int)KEYS::Left])
+						gData.obj.square.color -= 16;
+					else if (in == input[(int)KEYS::Right])
+						gData.obj.square.color += 16;
+
+					if (gData.obj.square.color < 0)
+						gData.obj.square.color = 240;
+					else if (gData.obj.square.color > 240)
+						gData.obj.square.color = 0;
+
+					break;
+
+				case OBJS::Stick:
+					if (in == input[(int)KEYS::Left])
+						gData.obj.stick.color -= 16;
+					else if (in == input[(int)KEYS::Right])
+						gData.obj.stick.color += 16;
+
+					if (gData.obj.stick.color < 0)
+						gData.obj.stick.color = 240;
+					else if (gData.obj.stick.color > 240)
+						gData.obj.stick.color = 0;
+
+					break;
+
+				case OBJS::LLeft:
+					if (in == input[(int)KEYS::Left])
+						gData.obj.lLeft.color -= 16;
+					else if (in == input[(int)KEYS::Right])
+						gData.obj.lLeft.color += 16;
+
+					if (gData.obj.lLeft.color < 0)
+						gData.obj.lLeft.color = 240;
+					else if (gData.obj.lLeft.color > 240)
+						gData.obj.lLeft.color = 0;
+
+					break;
+
+				case OBJS::LRight:
+					if (in == input[(int)KEYS::Left])
+						gData.obj.lRight.color -= 16;
+					else if (in == input[(int)KEYS::Right])
+						gData.obj.lRight.color += 16;
+
+					if (gData.obj.lRight.color < 0)
+						gData.obj.lRight.color = 240;
+					else if (gData.obj.lRight.color > 240)
+						gData.obj.lRight.color = 0;
+
+					break;
+
+				case OBJS::ZLeft:
+					if (in == input[(int)KEYS::Left])
+						gData.obj.zLeft.color -= 16;
+					else if (in == input[(int)KEYS::Right])
+						gData.obj.zLeft.color += 16;
+
+					if (gData.obj.zLeft.color < 0)
+						gData.obj.zLeft.color = 240;
+					else if (gData.obj.zLeft.color > 240)
+						gData.obj.zLeft.color = 0;
+
+					break;
+
+				case OBJS::ZRight:
+					if (in == input[(int)KEYS::Left])
+						gData.obj.zRight.color -= 16;
+					else if (in == input[(int)KEYS::Right])
+						gData.obj.zRight.color += 16;
+
+					if (gData.obj.zRight.color < 0)
+						gData.obj.zRight.color = 240;
+					else if (gData.obj.zRight.color > 240)
+						gData.obj.zRight.color = 0;
+
+					break;
+
+				default:
+					break;
+				}
+			} while (in != '0');
+		}
 		else if (selector == 0)
+		{
 			return;
+		}
 
 		system("cls");
+
+		std::cout << "Select a skin" << std::endl << std::endl
+			<< input[(int)KEYS::Left] << ": Show previous" << std::endl
+			<< input[(int)KEYS::Right] << ": Show next" << std::endl << std::endl
+			<< input[(int)KEYS::Back] << ": Back" << std::endl;
 
 		do
 		{
@@ -535,7 +697,8 @@ void ChangeSkin(GAMEDATA& gData, char input[])
 
 				break;
 
-			default:;
+			default:
+				break;
 			}
 		} while (in != input[(int)KEYS::Back]);
 
