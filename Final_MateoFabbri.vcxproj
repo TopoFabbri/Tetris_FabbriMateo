@@ -24,6 +24,7 @@
     <ProjectGuid>{5d1fefef-d9d2-40fa-a282-68a01c494757}</ProjectGuid>
     <RootNamespace>FinalMateoFabbri</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>Final_Fabbri</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -94,6 +95,9 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>XCOPY "$(SolutionDir)Music" "$(TargetDir)" /e /h /y /s</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -111,6 +115,9 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>XCOPY "$(SolutionDir)Music" "$(TargetDir)" /e /h /y /s</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -124,6 +131,9 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>XCOPY "$(SolutionDir)Music" "$(TargetDir)" /e /h /y /s</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -141,6 +151,9 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>XCOPY "$(SolutionDir)Music" "$(TargetDir)" /e /h /y /s</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="ConioMenus.h" />

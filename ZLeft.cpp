@@ -90,6 +90,14 @@ void ZLeft::Kick()
 	{
 		MoveRight();
 	}
+
+	if (left.y >= maxY || downRight.y >= maxY || down.y >= maxY)
+	{
+		left.y--;
+		downRight.y--;
+		center.y--;
+		down.y--;
+	}
 }
 
 bool ZLeft::CheckOverlapedCell(CELL board[maxX][maxY])

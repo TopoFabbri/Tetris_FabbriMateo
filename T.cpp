@@ -90,6 +90,14 @@ void T::Kick()
 	{
 		MoveRight();
 	}
+
+	if (left.y >= maxY || right.y >= maxY || down.y >= maxY)
+	{
+		left.y--;
+		right.y--;
+		center.y--;
+		down.y--;
+	}
 }
 
 bool T::CheckOverlapedCell(CELL board[maxX][maxY])

@@ -90,6 +90,13 @@ void LLeft::Kick()
 	{
 		MoveRight();
 	}
+	if (left.y >= maxY || corner.y >= maxY || down.y >= maxY)
+	{
+		left.y--;
+		center.y--;
+		corner.y--;
+		down.y--;
+	}
 }
 
 bool LLeft::CheckOverlapedCell(CELL board[maxX][maxY])

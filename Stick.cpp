@@ -100,6 +100,14 @@ void Stick::Kick()
 		MoveRight();
 	}
 
+	if (left.y >= maxY || right.y >= maxY || centerRight.y >= maxY)
+	{
+		left.y--;
+		right.y--;
+		centerLeft.y--;
+		centerRight.y--;
+	}
+
 	if (left.x >= maxX || right.x >= maxX || centerRight.x >= maxX)
 	{
 		MoveLeft();
@@ -107,6 +115,14 @@ void Stick::Kick()
 	else if (left.x < 0 || right.x < 0 || centerRight.x < 0)
 	{
 		MoveRight();
+	}
+
+	if (left.y >= maxY || right.y >= maxY || centerRight.y >= maxY)
+	{
+		left.y--;
+		right.y--;
+		centerLeft.y--;
+		centerRight.y--;
 	}
 }
 
